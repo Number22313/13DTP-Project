@@ -56,9 +56,14 @@ class Parts(db.Model):
 
 
 @app.route('/')
-def home():
+def Home():
     setups = Setups.query.all()
     return render_template('home.html', setups=setups)
+
+@app.route('/Times')
+def Times():
+    times = WR_Times.query.all()
+    return render_template('Times.html', times = times)
 
 if __name__ == '__main__':
     app.run(debug=True)

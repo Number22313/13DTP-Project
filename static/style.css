@@ -1,0 +1,19 @@
+td
+{
+    padding: 2vh;
+    min-width: 20vh;
+}
+
+nav
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5vh;
+}
+
+a
+{
+    text-decoration: none;
+    color: #0000FF;
+}
