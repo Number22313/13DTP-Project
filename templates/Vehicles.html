@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block content %}
+<body>
+    <h1>Vehicles</h1><br>
+    <table border="1">
+        <tr>
+            <td>ID</td>
+            <td>Vehicle Name</td>
+        </tr>
+        {% for vehicle in vehicles %}
+        <tr>
+            <td>{{vehicle.vehicle_id}}</td>
+            <td>{{vehicle.vehicle_name}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+{% endblock %}

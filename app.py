@@ -57,13 +57,39 @@ class Parts(db.Model):
 
 @app.route('/')
 def Home():
+    return render_template('home.html')
+
+@app.route('/Setups')
+def setups():
     setups = Setups.query.all()
-    return render_template('home.html', setups=setups)
+    return render_template('Setups.html', setups=setups)
 
 @app.route('/Times')
-def Times():
+def times():
     times = WR_Times.query.all()
-    return render_template('Times.html', times = times)
+    return render_template('Times.html', times=times)
+
+@app.route('/Tracks')
+def tracks():
+    tracks = Tracks.query.all()
+    return render_template('Tracks.html', tracks=tracks)
+
+@app.route('/Tunes')
+def tunes():
+    tunes = Tunes.query.all()
+    return render_template('Tunes.html', tunes=tunes)
+
+@app.route('/Vehicles')
+def vehicles():
+    vehicles = Vehicles.query.all()
+    return render_template('Vehicles.html', vehicles=vehicles)
+
+@app.route('/Parts')
+def parts():
+    parts = Parts.query.all()
+    return render_template('Parts.html', parts=parts)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

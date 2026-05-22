@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block content %}
+<body>
+    <h1>Tunes</h1><br>
+    <table border="1">
+        <tr>
+            <td>ID</td>
+            <td>Tune1</td>
+            <td>Tune2</td>
+            <td>Tune3</td>
+            <td>Tune4</td>
+        </tr>
+        {% for tune in tunes %}
+        <tr>
+            <td>{{tune.tune_id}}</td>
+            <td>{{tune.tune1}}</td>
+            <td>{{tune.tune2}}</td>
+            <td>{{tune.tune3}}</td>
+            <td>{{tune.tune4}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+{% endblock %}

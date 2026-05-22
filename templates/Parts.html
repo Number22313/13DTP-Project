@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+<body>
+    <h1>Parts</h1><br>
+    <table border="1">
+        <tr>
+            <td>ID</td>
+            <td>Slot1</td>
+            <td>Slot2</td>
+            <td>Slot3</td>
+        </tr>
+        {% for part in parts %}
+        <tr>
+            <td>{{part.part_id}}</td>
+            <td>{{part.slot1}}</td>
+            <td>{{part.slot2}}</td>
+            <td>{{part.slot3}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+{% endblock %}
