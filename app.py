@@ -1,7 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table
-from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
+from sqlalchemy.orm import Mapped
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/database.db"
@@ -55,13 +55,17 @@ class Parts(db.Model):
     slot3 = db.Column(db.Text, nullable=False)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def Home():
+    if request.method == 'POST':
+        print("Posting")
+    
     return render_template('home.html')
 
 @app.route('/Setups')
 def setups():
     setups = Setups.query.all()
+
     return render_template('Setups.html', setups=setups)
 
 @app.route('/Times')

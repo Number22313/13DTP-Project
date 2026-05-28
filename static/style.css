@@ -17,3 +17,29 @@ a
     text-decoration: none;
     color: #0000FF;
 }
+
+.form
+{
+    min-width: 25vh;
+    min-height: 25vh;
+    background-color: aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit
+{
+    min-width: 20vh;
+    min-height: 5vh;
+    border-color: black;
+    border-radius: 1vh;
+    color: black;
+    background-color: white;
+}
+
+.submit:hover
+{
+    background-color: black;
+    color: white;
+}
