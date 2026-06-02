@@ -3,16 +3,23 @@
 <body>
     <div class="form">
         <form method="POST" action="{{url_for('Home')}}">
-            <select name="Select" required>
+            <select name="vehicle_name" required>
                 <option value="Jeep">Jeep</option>
                 <option value="MX">MX</option>
                 <option value="SC">SC</option>
                 <option value="SD">SD</option>
                 <option value="ML">ML</option>
+                <option value="test">test</option>
+                <option value="test">test2</option>
+                <option value="test">test3</option>
+                <option value="test">test4</option>
            </select>
            <br>
            <div>
-                <input type="submit" class="submit" value="Submit">
+                <button type="submit" value="insert" name="action">Insert</button>
+           </div>
+           <div>
+                <button type="submit" value="delete" name="action">Delete</button>
            </div>
         </form>
     </div>

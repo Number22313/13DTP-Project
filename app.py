@@ -58,8 +58,19 @@ class Parts(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def Home():
     if request.method == 'POST':
-        print("Posting")
-    
+        action = request.form.get("action")
+        if action == 'insert':
+            print("Posting")
+            vehicle_insert = Vehicles(vehicle_name=request.form["vehicle_name"])
+            db.session.add(vehicle_insert)
+            db.session.commit()
+        
+        elif action == 'delete':
+            print("Deleting")
+            vehicle_delete = Vehicles.query.get(vehicle_name=request.form["vehicle_name"])
+            db.session.delete(vehicle_delete)
+            db.session.commit()
+
     return render_template('home.html')
 
 @app.route('/Setups')

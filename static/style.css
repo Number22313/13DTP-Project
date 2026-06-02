@@ -28,7 +28,7 @@ a
     align-items: center;
 }
 
-.submit
+.button
 {
     min-width: 20vh;
     min-height: 5vh;
@@ -38,7 +38,7 @@ a
     background-color: white;
 }
 
-.submit:hover
+.button:hover
 {
     background-color: black;
     color: white;
