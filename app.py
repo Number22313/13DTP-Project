@@ -60,15 +60,18 @@ def Home():
     if request.method == 'POST':
         action = request.form.get("action")
         if action == 'insert':
-            print("Posting")
+            print("Inserting")
             vehicle_insert = Vehicles(vehicle_name=request.form["vehicle_name"])
+            WR_Times_insert = WR_Times(time=request.form["time"], player=request.form["player"])
             db.session.add(vehicle_insert)
+            db.session.add(WR_Times_insert)
             db.session.commit()
         
         elif action == 'delete':
             print("Deleting")
-            vehicle_delete = Vehicles.query.get(vehicle_name=request.form["vehicle_name"])
-            db.session.delete(vehicle_delete)
+            Vehicles.query.filter_by(vehicle_name=request.form["vehicle_name"]).delete()
+            WR_Times.query.filter_by(time=request.form["time"]).delete()
+            WR_Times.query.filter_by(player=request.form["player"]).delete()
             db.session.commit()
 
     return render_template('home.html')
