@@ -1,7 +1,8 @@
 td
 {
     padding: 2vh;
-    min-width: 20vh;
+    border: 1px solid black;
+    text-align: center;
 }
 
 nav
@@ -20,18 +21,16 @@ a
 
 form
 {
-    min-width: 25vh;
     min-height: 25vh;
     background-color: aliceblue;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 button
 {
-    min-width: 20vh;
-    min-height: 5vh;
+    min-width: 15vh;
+    min-height: 3vh;
     border-color: black;
     border-radius: 1vh;
     color: black;
@@ -44,7 +43,14 @@ button:hover
     color: white;
 }
 
-.table
+table
 {
     border: 1px solid black;
+}
+
+.delete
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
