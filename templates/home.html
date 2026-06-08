@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
-    <div class="form">
+    <div class="form">Insert
         <form method="POST" action="{{url_for('Home')}}">
             <select name="vehicle_name">
                 <option disabled hidden></option>
@@ -14,17 +14,27 @@
                 <option value="test2">test2</option>
                 <option value="test3">test3</option>
                 <option value="test4">test4</option>
-           </select>
-           <br>
-           <input type="number" name="time">
-           <input type="text" name="player">
-           <br>
-           <div>
+            </select>
+            <br>
+            <input type="number" name="time">
+            <input type="text" name="player">
+            <br>
+            <div>
+                <select>
+                    <option disabled hidden></option>
+                    <option value="Bottom_gear">Bottom Gear</option>
+                    <option value="No_skidding">No Skidding</option>
+                    <option value="Landing_drive">Landing Drive</option>
+                    <option value="Seesaw_road">Seesaw Road</option>
+                    <option value="Big_air">Big Air</option>
+                </select>
+            </div>
+            <div>
                 <button type="submit" value="insert" name="action">Insert</button>
-           </div>
-           <div>
+            </div>
+            <div>
                 <button type="submit" value="delete" name="action">Delete</button>
-           </div>
+            </div>
         </form>
     </div>
 </body>

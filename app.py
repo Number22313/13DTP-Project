@@ -58,23 +58,23 @@ class Parts(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def Home():
     if request.method == 'POST':
-        action = request.form.get("action")
-        if action == 'insert':
-            print("Inserting")
-            vehicle_insert = Vehicles(vehicle_name=request.form["vehicle_name"])
-            WR_Times_insert = WR_Times(time=request.form["time"], player=request.form["player"])
-            db.session.add(vehicle_insert)
-            db.session.add(WR_Times_insert)
-            db.session.commit()
-        
-        elif action == 'delete':
-            print("Deleting")
-            Vehicles.query.filter_by(vehicle_name=request.form["vehicle_name"]).delete()
-            WR_Times.query.filter_by(time=request.form["time"]).delete()
-            WR_Times.query.filter_by(player=request.form["player"]).delete()
-            db.session.commit()
-
+        print("Inserting")
+        vehicle_insert = Vehicles(vehicle_name=request.form["vehicle_name"])
+        WR_Times_insert = WR_Times(time=request.form["time"], player=request.form["player"])
+        db.session.add(vehicle_insert)
+        db.session.add(WR_Times_insert)
+        db.session.commit()
     return render_template('home.html')
+
+@app.route('/Delete', methods=['GET', 'POST'])
+def delete():
+    if request.method == 'POST':
+        print("Deleting")
+        Vehicles.query.filter_by(vehicle_name=request.form["vehicle_name"]).delete()
+        WR_Times.query.filter_by(time=request.form["time"]).delete()
+        WR_Times.query.filter_by(player=request.form["player"]).delete()
+        db.session.commit()
+    return render_template('delete.html')
 
 @app.route('/Setups')
 def setups():

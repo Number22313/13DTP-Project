@@ -18,7 +18,7 @@ a
     color: #0000FF;
 }
 
-.form
+form
 {
     min-width: 25vh;
     min-height: 25vh;
@@ -28,7 +28,7 @@ a
     align-items: center;
 }
 
-.button
+button
 {
     min-width: 20vh;
     min-height: 5vh;
@@ -38,8 +38,13 @@ a
     background-color: white;
 }
 
-.button:hover
+button:hover
 {
     background-color: black;
     color: white;
+}
+
+.table
+{
+    border: 1px solid black;
 }
