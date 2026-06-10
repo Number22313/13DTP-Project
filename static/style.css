@@ -1,11 +1,27 @@
+html
+{
+    --background-color: black;
+    --text-color: white;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
 td
 {
     padding: 2vh;
     border: 1px solid black;
     text-align: center;
+    color: var(--text-color);
+    background-color: var(--background-color);
 }
 
 nav
+{
+    display: flex;
+    align-items: center;
+}
+
+.links
 {
     display: flex;
     justify-content: center;
@@ -22,7 +38,8 @@ a
 form
 {
     min-height: 25vh;
-    background-color: aliceblue;
+    background-color: rgb(59, 59, 59);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
 }
@@ -31,16 +48,8 @@ button
 {
     min-width: 15vh;
     min-height: 3vh;
-    border-color: black;
-    border-radius: 1vh;
-    color: black;
-    background-color: white;
-}
-
-button:hover
-{
-    background-color: black;
-    color: white;
+    border-color: rgb(44, 44, 44);
+    border-radius: none;
 }
 
 table
@@ -48,9 +57,8 @@ table
     border: 1px solid black;
 }
 
-.delete
+button[type="submit"]
 {
     display: flex;
     justify-content: center;
-    align-items: center;
 }

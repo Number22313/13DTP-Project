@@ -3,37 +3,54 @@
 <body>
     <div class="form">Insert
         <form method="POST" action="{{url_for('Home')}}">
-            <select name="vehicle_name">
-                <option disabled hidden></option>
-                <option value="Jeep">Jeep</option>
-                <option value="MX">MX</option>
-                <option value="SC">SC</option>
-                <option value="SD">SD</option>
-                <option value="ML">ML</option>
-                <option value="test">test</option>
-                <option value="test2">test2</option>
-                <option value="test3">test3</option>
-                <option value="test4">test4</option>
-            </select>
-            <br>
-            <input type="number" name="time">
-            <input type="text" name="player">
-            <br>
             <div>
-                <select>
-                    <option disabled hidden></option>
-                    <option value="Bottom_gear">Bottom Gear</option>
-                    <option value="No_skidding">No Skidding</option>
-                    <option value="Landing_drive">Landing Drive</option>
-                    <option value="Seesaw_road">Seesaw Road</option>
-                    <option value="Big_air">Big Air</option>
-                </select>
+                <table>
+                    <tr>
+                        <td>Vehicle</td>
+                        <td>Time</td>
+                        <td>Player</td>
+                        <td>Track</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select name="vehicle_name">
+                                <option disabled hidden selected></option>
+                                <option value="Jeep">Jeep</option>
+                                <option value="MX">MX</option>
+                                <option value="SC">SC</option>
+                                <option value="SD">SD</option>
+                                <option value="ML">ML</option>
+                                <option value="test">test</option>
+                                <option value="test2">test2</option>
+                                <option value="test3">test3</option>
+                                <option value="test4">test4</option>
+                            </select>
+                        </td>
+                        <br>
+                        <td>
+                            <input type="number" name="time">
+                        </td>
+                        <br>
+                        <td>
+                            <input type="text" name="player">
+                        </td>
+                        <br>
+                        <td>
+                            <select>
+                                <option disabled hidden></option>
+                                <option value="Bottom_gear">Bottom Gear</option>
+                                <option value="No_skidding">No Skidding</option>
+                                <option value="Landing_drive">Landing Drive</option>
+                                <option value="Seesaw_road">Seesaw Road</option>
+                                <option value="Big_air">Big Air</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </div>
+            <br>
             <div>
-                <button type="submit" value="insert" name="action">Insert</button>
-            </div>
-            <div>
-                <button type="submit" value="delete" name="action">Delete</button>
+                <button type="submit">Insert</button>
             </div>
         </form>
     </div>
