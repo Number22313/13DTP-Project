@@ -10,6 +10,7 @@
                         <td>Time</td>
                         <td>Player</td>
                         <td>Track</td>
+                        <td>Tune(1/1/1/1)</td>
                     </tr>
                     <tr>
                         <td>
@@ -20,10 +21,10 @@
                                 <option value="SC">SC</option>
                                 <option value="SD">SD</option>
                                 <option value="ML">ML</option>
-                                <option value="test">test</option>
-                                <option value="test2">test2</option>
-                                <option value="test3">test3</option>
-                                <option value="test4">test4</option>
+                                <option value="SPC">SPC</option>
+                                <option value="RB">RB</option>
+                                <option value="HR">HR</option>
+                                <option value="MT">MT</option>
                             </select>
                         </td>
                         <br>
@@ -36,14 +37,21 @@
                         </td>
                         <br>
                         <td>
-                            <select>
-                                <option disabled hidden></option>
+                            <select name="track_name">
+                                <option disabled hidden selected></option>
                                 <option value="Bottom_gear">Bottom Gear</option>
                                 <option value="No_skidding">No Skidding</option>
                                 <option value="Landing_drive">Landing Drive</option>
                                 <option value="Seesaw_road">Seesaw Road</option>
                                 <option value="Big_air">Big Air</option>
                             </select>
+                        </td>
+                        <br>
+                        <td>
+                            <input type="number" max="20" min="1" name="tune1">
+                            <input type="number" max="20" min="1" name="tune2">
+                            <input type="number" max="20" min="1" name="tune3">
+                            <input type="number" max="20" min="1" name="tune4">
                         </td>
                     </tr>
                 </table>

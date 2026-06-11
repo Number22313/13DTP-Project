@@ -59,10 +59,13 @@ class Parts(db.Model):
 def Home():
     if request.method == 'POST':
         print("Inserting")
-        vehicle_insert = Vehicles(vehicle_name=request.form["vehicle_name"])
-        WR_Times_insert = WR_Times(time=request.form["time"], player=request.form["player"])
-        db.session.add(vehicle_insert)
-        db.session.add(WR_Times_insert)
+        db.session.add(WR_Times(time=request.form["time"], player=request.form["player"]),
+                       Tracks(track_name=request.form["track_name"]),
+                       Tunes(tune1=request.form["tune1"], tune2=request.form["tune2"],
+                             tune3=request.form["tune3"], tune4=request.form["tune4"]),
+                       Vehicles(vehicle_name=request.form["vehicle_name"]),
+                       Parts
+                )
         db.session.commit()
     return render_template('home.html')
 
