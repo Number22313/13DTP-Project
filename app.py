@@ -67,7 +67,7 @@ def Home():
                        Parts
                 )
         db.session.commit()
-    return render_template('home.html')
+    return render_template('home.html',)
 
 @app.route('/Delete', methods=['GET', 'POST'])
 def delete():
