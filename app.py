@@ -59,14 +59,21 @@ class Parts(db.Model):
 def Home():
     if request.method == 'POST':
         print("Inserting")
+        slot1=request.form["slot1"]
+        slot2=request.form["slot2"]
+        slot3=request.form["slot3"]
         db.session.add(WR_Times(time=request.form["time"], player=request.form["player"]),
                        Tracks(track_name=request.form["track_name"]),
                        Tunes(tune1=request.form["tune1"], tune2=request.form["tune2"],
                              tune3=request.form["tune3"], tune4=request.form["tune4"]),
                        Vehicles(vehicle_name=request.form["vehicle_name"]),
-                       Parts
+                       Parts(slot1=slot1, slot2=slot2, slot3=slot3)
                 )
-        db.session.commit()
+        if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
+            print("Not valid")
+            db.session.rollback()
+        else:
+            db.session.commit()
     return render_template('home.html',)
 
 @app.route('/Delete', methods=['GET', 'POST'])
