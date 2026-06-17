@@ -62,13 +62,13 @@ def Home():
         slot1=request.form["slot1"]
         slot2=request.form["slot2"]
         slot3=request.form["slot3"]
-        db.session.add(WR_Times(time=request.form["time"], player=request.form["player"]),
+        db.session.add_all([WR_Times(time=request.form["time"], player=request.form["player"]),
                        Tracks(track_name=request.form["track_name"]),
                        Tunes(tune1=request.form["tune1"], tune2=request.form["tune2"],
                              tune3=request.form["tune3"], tune4=request.form["tune4"]),
                        Vehicles(vehicle_name=request.form["vehicle_name"]),
                        Parts(slot1=slot1, slot2=slot2, slot3=slot3)
-                )
+        ])
         if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
             print("Not valid")
             db.session.rollback()
@@ -89,8 +89,18 @@ def delete():
 @app.route('/Setups')
 def setups():
     setups = Setups.query.all()
-
-    return render_template('Setups.html', setups=setups)
+    times = WR_Times.query.all()
+    tracks = Tracks.query.all()
+    tunes = Tunes.query.all()
+    vehicles = Vehicles.query.all()
+    parts = Parts.query.all()
+    return render_template('Setups.html',
+                           setups=setups,
+                           times=times,
+                           tracks=tracks,
+                           tunes=tunes,
+                           vehicles=vehicles,
+                           parts=parts)
 
 @app.route('/Times')
 def times():

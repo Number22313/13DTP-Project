@@ -2,7 +2,7 @@
 {% block content %}
 <body>
     <h1>Setups</h1><br>
-    <table class="table">
+    <table>
         <tr>
             <td>Setup ID</td>
             <td>Time/Player</td>
@@ -23,5 +23,43 @@
         {% endfor %}
     </table>
     <br>
+    <h1>Setups Insert</h1>
+    <table>
+        <tr>
+            <td>Times (ID,Time,Player)</td>
+        </tr>
+        
+        <tr>
+            <td>
+                <select>
+                    {% for time in times %}
+                    <option>
+                        {{ time.time_id}} / {{ time.time }} / {{ time.player }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+
+            <td>
+                <select>
+                    {% for track in tracks %}
+                    <option>
+                        {{ track.track_id }} / {{ track.track_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+
+            <td>
+                <select>
+                    {% for time in times %}
+                    <option>
+                        {{ time.time_id}} / {{ time.time }} / {{ time.player }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+    </table>
 </body>
 {% endblock %}
