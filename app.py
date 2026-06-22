@@ -57,20 +57,45 @@ class Parts(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def Home():
+    tracks_list = ["Landing_Drive"]
+    vehicles_list = ["HR"]
     if request.method == 'POST':
         print("Inserting")
+        tune1=request.form["tune1"]
+        tune2=request.form["tune2"]
+        tune3=request.form["tune3"]
+        tune4=request.form["tune4"]
+        tunes_list = [tune1,tune2,tune3,tune4]
         slot1=request.form["slot1"]
         slot2=request.form["slot2"]
         slot3=request.form["slot3"]
+        slot_list = [slot1,slot2,slot3]
+        parts_list = []
         db.session.add_all([WR_Times(time=request.form["time"], player=request.form["player"]),
                        Tracks(track_name=request.form["track_name"]),
-                       Tunes(tune1=request.form["tune1"], tune2=request.form["tune2"],
-                             tune3=request.form["tune3"], tune4=request.form["tune4"]),
+                       Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4),
                        Vehicles(vehicle_name=request.form["vehicle_name"]),
                        Parts(slot1=slot1, slot2=slot2, slot3=slot3)
         ])
+        # Back end validation
+        if ([Tracks(track_name=request.form["track_name"])]) not in tracks_list:
+            print("Not a valid track")
+            db.session.rollback()
+
+        for i in tunes_list:
+            if i >= 21 or i <= 0:
+                print("Not a valid tune")
+        if ([Vehicles(vehicle_name=request.form["vehicle_name"])]) not in vehicles_list:
+            print("Not a valid vehicle")
+            db.session.rollback()
+
+        for i in slot_list:
+            if i not in parts_list:
+                print("Not a valid part")
+                db.session.rollback()
+
         if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
-            print("Not valid")
+            print("Duped parts")
             db.session.rollback()
         else:
             db.session.commit()
