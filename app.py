@@ -57,45 +57,95 @@ class Parts(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def Home():
-    tracks_list = ["Landing_Drive"]
+    tracks_list = ["Bottom Gear","No Skidding","Cuptown Relax","Landing Drive","Seesaw Road",
+                   "Big Air","Beyond Climberdome","Legendary Apex","Trial of Fall",
+                   "Trial of Courage","Trial of Balance","Forbidden Forest","Captain's Log",
+                   "The Pond","Racing Wild","The Fast Lions","Sunburnt","Tumbleweeds",
+                   "Road to Heck","Hills Ahead","Visions of Victory","Hollow Road",
+                   "Barn Ride","Base Jump","Silo Showdown","Let It Snow","Slippery Slope",
+                   "Crossroads","The Dunes","Beach Boys","Seaside","Showgrounds",
+                   "Four-Wheel Park","Circuit 9","House Party","Call of the Night",
+                   "Shape of Hills to Come","Factory Settings","Face Plant",
+                   "Flip a Switch","Plain As Day","World's Fastest Animal","Fare You Well",
+                   "Bridges And Stones","The Dip","Killing Floors","Shaft Redemption",
+                   "Tired Alligators","Hangout Cave","Docked_Out","Rubberist","Heat Club",
+                   "Whipclash","Fury Road","Yellow Snow","Sledhammer","Icicle Race",
+                   "Fingerwoods","The Quarry","Lost In Transmission","Flipway","Deeper End",
+                   "The Trench","Reef Grief","Canyon_Getaway","Racepalm","Jet Boost Holidays",
+                   "Falling Crates","Magnet Madness","Take_Off","Long Road Down",
+                   "Bill's Landing","Spartan Racing","Ballmer's Peak","Skid Happens",
+                   "No Step on Snek","Bat Country","Through The Mountains","Gentle Escalation",
+                   "Cool Descent","Topsy-Turvy","Roll With It","Switch It Up","Drive Through",
+                   "Danger_Zone","A Bridge Too Far","Cliffside Way","Tricky Drive",
+                   "Nose Miner"
+                   ]
     vehicles_list = ["HR"]
     if request.method == 'POST':
         print("Inserting")
+        
+        #All form fields as variables for validation and insertion
+        time=request.form["time"]
+        player=request.form["player"]
+        track_name=request.form["track_name"]
         tune1=request.form["tune1"]
         tune2=request.form["tune2"]
         tune3=request.form["tune3"]
         tune4=request.form["tune4"]
         tunes_list = [tune1,tune2,tune3,tune4]
+        vehicle_name=request.form["vehicle_name"]
         slot1=request.form["slot1"]
         slot2=request.form["slot2"]
         slot3=request.form["slot3"]
         slot_list = [slot1,slot2,slot3]
-        parts_list = []
-        db.session.add_all([WR_Times(time=request.form["time"], player=request.form["player"]),
-                       Tracks(track_name=request.form["track_name"]),
+        parts_list = ["Nitro","Fuel_Boost","Coin_Boost"]
+        db.session.add_all([WR_Times(time=time, player=player),
+                       Tracks(track_name=track_name),
                        Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4),
-                       Vehicles(vehicle_name=request.form["vehicle_name"]),
+                       Vehicles(vehicle_name=vehicle_name),
                        Parts(slot1=slot1, slot2=slot2, slot3=slot3)
         ])
-        # Back end validation
-        if ([Tracks(track_name=request.form["track_name"])]) not in tracks_list:
+
+        #Back end validation
+        not_valid = False
+
+        #Empty fields check
+        if (
+            not time or not player or not track_name or not tune1 
+            or not tune2 or not tune3 or not tune4 or not vehicle_name 
+            or not slot1 or not slot2 or not slot3
+        ):
+            print("Empty fields")
+            not_valid = True
+
+        #Valid fields check
+        if track_name not in tracks_list:
             print("Not a valid track")
-            db.session.rollback()
+            not_valid = True
 
         for i in tunes_list:
-            if i >= 21 or i <= 0:
-                print("Not a valid tune")
-        if ([Vehicles(vehicle_name=request.form["vehicle_name"])]) not in vehicles_list:
+            try:
+                tune_int = int(i)
+                if tune_int >= 21 or tune_int <= 0:
+                    print("Not a valid tune")
+                    not_valid = True
+            except ValueError:
+                print("Not a valid number")
+                not_valid = True
+
+        if vehicle_name not in vehicles_list:
             print("Not a valid vehicle")
-            db.session.rollback()
+            not_valid = True
 
         for i in slot_list:
             if i not in parts_list:
                 print("Not a valid part")
-                db.session.rollback()
+                not_valid = True
 
         if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
             print("Duped parts")
+            not_valid = True
+        
+        if not_valid:
             db.session.rollback()
         else:
             db.session.commit()
