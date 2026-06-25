@@ -77,7 +77,39 @@ def Home():
                    "No Step on Snek","Bat Country","Through The Mountains","Gentle Escalation",
                    "Cool Descent","Topsy-Turvy","Roll With It","Switch It Up","Drive Through",
                    "Danger_Zone","A Bridge Too Far","Cliffside Way","Tricky Drive",
-                   "Nose Miner"
+                   "Nose Miner","Happy Miner","A Flat Miner","Nature Calls","Chew and Run",
+                   "Nectar of the Climb","Sand in Swimsuit","Tunnel Dive","The Big Dunes",
+                   "Swamp Ride","Grill Bill","Happy Campers","Boarding","Carting","Overtakers",
+                   "Front Window","Belter Road","Metal Gear","Braking Bad","Hairpin",
+                   "Smooth Curves","Dusky Vale","Big Log Sprint","Twisted Trees","Snow Castle",
+                   "Tailwind Trail","Headwind Shortcut","Like a Hawk","Deepest End",
+                   "Rock and Roll","Wheeler","Deep End","Tunnel Vision","The Esses",
+                   "On the Rocks","Boiling Hollow","Bone Gorge","Forgotten Highway",
+                   "Frostfire Caverns","Rust Valley","Cactus Hill","Dust Valley","The Ruins",
+                   "Tumbling Down","Down the Tube","Muddy Road","Cottage Road","Lonely Camper",
+                   "Parking Trailers","Snappy Swamps","Bumps in the Water","Dirt Road",
+                   "Danger Ahead","Highs and Lows","Get Soaked","Watery Tunnel","Don't Dive",
+                   "Living on the Edge","Over the Cliff","Steep Downhill Cliff","Nowhere Road",
+                   "Coconut Cove","Downtown Madness","Bumpy Ride","Rough Road",
+                   "Under the Cliff","Base Camp","Crazy Climb","Top of the World",
+                   "Logs and Rocks","Rock Pit","Flying Log","Tide Waves","Kid's Pool",
+                   "Sandbox","Far Far Away","Hot Tarmac","The Carousel","Fast_Lane",
+                   "Paradise Bay","Backwash Dash","Coral Quarrel","Thalassophobia",
+                   "Access to Enjoyment","Liability Free Run","Generate Delight",
+                   "Approaching Dread","Commence Fright","Spook On,Spook Off",
+                   "You shall not jump","The Princess Drive","Puddle Bender","A Storm of Stumps",
+                   "Special Stage One","Special Stage Two","Special Stage Three","Nightlife",
+                   "Neighbourbonnet","Boost Boulevard","Jumpin' Jack Crash","Breakneck Blitz",
+                   "Carppuccino","Smooth Blend","Bean 2 Tank","Dire Drive",
+                   "One Does Not Simply","Ice Era","Logging In","Stumped","The Root Cause",
+                   "Natural Sprinters","Let's Hunt Some Torque","Mud's Back on the Menu",
+                   
+                   #Adventure maps
+                   "Countryside","Spring Falls","Forest","City","Mountain","Rustbucket Reef",
+                   "Winter","Mines","Desert Valley","Beach","Backwater Bog","Racer Glacier",
+                   "Patchwork Plant","Switchback Savanna","Gloomvale","Overspill Fun Rig",
+                   "Canyon Arena","Cuptown","Sky Rock Outpost","Forest Trials","Intense City",
+                   "Arena Gauntlet","Raging Winter"
                    ]
     vehicles_list = ["HR"]
     if request.method == 'POST':
@@ -93,6 +125,7 @@ def Home():
         tune4=request.form["tune4"]
         tunes_list = [tune1,tune2,tune3,tune4]
         vehicle_name=request.form["vehicle_name"]
+        print(vehicle_name)
         slot1=request.form["slot1"]
         slot2=request.form["slot2"]
         slot3=request.form["slot3"]
@@ -149,7 +182,7 @@ def Home():
             db.session.rollback()
         else:
             db.session.commit()
-    return render_template('home.html',)
+    return render_template('home.html',tracks_list=tracks_list)
 
 @app.route('/Delete', methods=['GET', 'POST'])
 def delete():
