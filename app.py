@@ -128,6 +128,7 @@ def Home():
         print("Inserting")
         
         #All form fields as variables for validation and insertion
+        not_valid = False
         time=request.form.get("time","")
         player=request.form.get("player","")
         track_name=request.form.get("track_name","")
@@ -135,27 +136,24 @@ def Home():
         tune2=request.form.get("tune2","")
         tune3=request.form.get("tune3","")
         tune4=request.form.get("tune4","")
+        try:
+            tune1 = int(tune1)
+            tune2 = int(tune2)
+            tune3 = int(tune3)
+            tune4 = int(tune4)
+            time = float(time)
+        except ValueError:
+            not_valid = True
+            tune1,tune2,tune3,tune4 = 0,0,0,0
+            time = 0.0
         tunes_list = [tune1,tune2,tune3,tune4]
         vehicle_name=request.form.get("vehicle_name","")
         slot1=request.form.get("slot1","")
         slot2=request.form.get("slot2","")
         slot3=request.form.get("slot3","")
         slot_list = [slot1,slot2,slot3]
-        new_time = WR_Times(time=time,player=player)
-        new_track = Tracks(track_name=track_name)
-        new_tune = Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4)
-        new_vehicle = Vehicles(vehicle_name=vehicle_name)
-        new_parts = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
-        
-        new_setup = Setups(wr_time=new_time,
-                           track=new_track,
-                           tune=new_tune,
-                           vehicle=new_vehicle,
-                           parts_combinations=new_parts
-                           )
 
         #Back end validation
-        not_valid = False
 
         #Empty fields check
         if (
@@ -197,7 +195,60 @@ def Home():
         if not_valid:
             print("Invalid Fields")
         else:
-            db.session.add(new_setup)
+            #Search the db for matching fields
+            vehicle_query = Vehicles.query.filter_by(vehicle_name=vehicle_name).first()
+            if not vehicle_query:
+                vehicle_query = Vehicles(vehicle_name=vehicle_name)
+                db.session.add(vehicle_query)
+
+            track_query = Tracks.query.filter_by(track_name=track_name).first()
+            if not track_query:
+                track_query = Tracks(track_name=track_name)
+                db.session.add(track_query)
+            
+            tune_query = Tunes.query.filter_by(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4).first()
+            if not tune_query:
+                tune_query = Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4)
+                db.session.add(tune_query)
+            
+            parts_query = Parts.query.filter_by(slot1=slot1, slot2=slot2, slot3=slot3).first()
+            if not parts_query:
+                parts_query = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
+                db.session.add(parts_query)
+            
+            db.session.flush()
+            
+            #Check if they match
+            setup_query = Setups.query.join(WR_Times).filter(
+                Setups.vehicle == vehicle_query,
+                Setups.track == track_query,
+                Setups.tune == tune_query,
+                Setups.parts_combinations == parts_query,
+                WR_Times.player == player
+            ).first()
+            
+            #If there is a duplicate:
+            if setup_query:
+                print("Already a setup")
+                if time < setup_query.wr_time.time:
+                    print("Faster time")
+                    setup_query.wr_time.time = time
+            #No duplicate
+            else:
+                print("Doesnt exist yet")
+                time_query = WR_Times(time=time,player=player)
+                db.session.add(time_query)
+                db.session.flush()
+
+                setup = Setups(
+                    time_id = time_query.time_id,
+                    vehicle_id = vehicle_query.vehicle_id,
+                    track_id = track_query.track_id,
+                    tune_id = tune_query.tune_id,
+                    part_id = parts_query.part_id
+                )
+                db.session.add(setup)
+
             db.session.commit()
             print("Inserted")
     return render_template('home.html',tracks_list=tracks_list,
