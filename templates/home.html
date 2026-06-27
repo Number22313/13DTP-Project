@@ -17,135 +17,51 @@
                         <td>
                             <select name="vehicle_name">
                                 <option value="" disabled hidden selected></option>
-                                <option value="Hill_Climber"></option>
-                                <option value="Scooter"></option>
-                                <option value="Bus"></option>
-                                <option value="Hill_Climber_Mk2"></option>
-                                <option value="Tractor"></option>
-                                <option value="Motocross"></option>
-                                <option value="Dune_Buggy"></option>
-                                <option value="Sports_Car"></option>
-                                <option value="Monster_Truck"></option>
-                                <option value="Rotator"></option>
-                                <option value="Super_Diesel"></option>
-                                <option value="Chopper"></option>
-                                <option value="Tank"></option>
-                                <option value="Lowrider"></option>
-                                <option value="Snowmobile"></option>
-                                <option value="Monowheel"></option>
-                                <option value="Beast"></option>
-                                <option value="Rally_Car"></option>
-                                <option value="Formula"></option>
-                                <option value="Muscle_Car"></option>
-                                <option value="Racing_Truck"></option>
-                                <option value="Hot_Rod"></option>
-                                <option value="CC-EV"></option>
-                                <option value="Superbike"></option>
-                                <option value="Supercar"></option>
-                                <option value="Moonlander"></option>
-                                <option value="Rock_Bouncer"></option>
-                                <option value="Hoverbike"></option>
-                                <option value="Raider"></option>
-                                <option value="Glider"></option>
-                                <option value="Bolt"></option>
-                                <option value="Atv"></option>
-                                <option value="Offroader"></option>
-                                <option value="Stocker"></option>
+                                {% for i in vehicles_list %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
                             </select>
                         </td>
-                        <br>
                         <td>
                             <input type="number" step="any" name="time">
                         </td>
-                        <br>
                         <td>
                             <input type="text" name="player">
                         </td>
-                        <br>
                         <td>
                             <select name="track_name">
                                 <option value="" disabled selected hidden></option>
                                 {% for i in tracks_list %}
-                                    <option value={{i}}>{{i}}</option>
+                                    <option value="{{i}}">{{i}}</option>
                                 {% endfor %}
                             </select>
                         </td>
-                        <br>
                         <td>
                             <input type="number" max="20" min="1" name="tune1">
                             <input type="number" max="20" min="1" name="tune2">
                             <input type="number" max="20" min="1" name="tune3">
                             <input type="number" max="20" min="1" name="tune4">
                         </td>
-                        <br>
                         <td>
                             <select name="slot1">
                                 <option value="" selected disabled hidden></option>
-                                <option value="Magnet">Magnet</option>
-                                <option value="Heavyweight">Heavyweight</option>
-                                <option value="Wings">Wings</option>
-                                <option value="Rollcage">Rollcage</option>
-                                <option value="Air_Control">Air Control</option>
-                                <option value="Winter_Tires">Winter Tires</option>
-                                <option value="Start_Boost">Start Boost</option>
-                                <option value="Wheelie_Boost">Wheelie Boost</option>
-                                <option value="Fume_Boost">Fume Boost</option>
-                                <option value="Flip_Boost">Flip Boost</option>
-                                <option value="Jump_Shocks">Jump Shocks</option>
-                                <option value="Landing_Boost">Landing Boost</option>
-                                <option value="Overcharged_Turbo">Overcharged Turbo</option>
-                                <option value="Afterburner">Afterburner</option>
-                                <option value="Spoiler">Spoiler</option>
-                                <option value="Thrusters">Thrusters</option>
-                                <option value="Fuel_Boost">Fuel Boost</option>
-                                <option value="Coin_Boost">Coin Boost</option>
-                                <option value="Nitro">Nitro</option>
+                                {% for i in parts_list %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
                             </select>
 
                             <select name="slot2">
                                 <option value="" selected disabled hidden></option>
-                                <option value="Magnet">Magnet</option>
-                                <option value="Heavyweight">Heavyweight</option>
-                                <option value="Wings">Wings</option>
-                                <option value="Rollcage">Rollcage</option>
-                                <option value="Air_Control">Air Control</option>
-                                <option value="Winter_Tires">Winter Tires</option>
-                                <option value="Start_Boost">Start Boost</option>
-                                <option value="Wheelie_Boost">Wheelie Boost</option>
-                                <option value="Fume_Boost">Fume Boost</option>
-                                <option value="Flip_Boost">Flip Boost</option>
-                                <option value="Jump_Shocks">Jump Shocks</option>
-                                <option value="Landing_Boost">Landing Boost</option>
-                                <option value="Overcharged_Turbo">Overcharged Turbo</option>
-                                <option value="Afterburner">Afterburner</option>
-                                <option value="Spoiler">Spoiler</option>
-                                <option value="Thrusters">Thrusters</option>
-                                <option value="Fuel_Boost">Fuel Boost</option>
-                                <option value="Coin_Boost">Coin Boost</option>
-                                <option value="Nitro">Nitro</option>
+                                {% for i in parts_list %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
                             </select>
 
                             <select name="slot3">
                                 <option value="" selected disabled hidden></option>
-                                <option value="Magnet">Magnet</option>
-                                <option value="Heavyweight">Heavyweight</option>
-                                <option value="Wings">Wings</option>
-                                <option value="Rollcage">Rollcage</option>
-                                <option value="Air_Control">Air Control</option>
-                                <option value="Winter_Tires">Winter Tires</option>
-                                <option value="Start_Boost">Start Boost</option>
-                                <option value="Wheelie_Boost">Wheelie Boost</option>
-                                <option value="Fume_Boost">Fume Boost</option>
-                                <option value="Flip_Boost">Flip Boost</option>
-                                <option value="Jump_Shocks">Jump Shocks</option>
-                                <option value="Landing_Boost">Landing Boost</option>
-                                <option value="Overcharged_Turbo">Overcharged Turbo</option>
-                                <option value="Afterburner">Afterburner</option>
-                                <option value="Spoiler">Spoiler</option>
-                                <option value="Thrusters">Thrusters</option>
-                                <option value="Fuel_Boost">Fuel Boost</option>
-                                <option value="Coin_Boost">Coin Boost</option>
-                                <option value="Nitro">Nitro</option>
+                                {% for i in parts_list %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
                             </select>
                         </td>
                     </tr>

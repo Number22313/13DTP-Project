@@ -111,32 +111,48 @@ def Home():
                    "Canyon Arena","Cuptown","Sky Rock Outpost","Forest Trials","Intense City",
                    "Arena Gauntlet","Raging Winter"
                    ]
-    vehicles_list = ["HR"]
+    vehicles_list = ["Hill Climber","Scooter","Bus","Hill Climber Mk2","Tractor","Motocross",
+                     "Dune Buggy","Sports Car","Monster Truck","Rotator","Super Diesel",
+                     "Chopper","Tank","Lowrider","Snowmobile","Monowheel","Beast",
+                     "Rally Car","Formula","Muscle Car","Racing Truck","Hot Rod","CC-EV",
+                     "Superbike","Supercar","Moonlander","Rock Bouncer","Hoverbike","Raider",
+                     "Glider","Bolt","ATV","Offroader","Stocker"
+                     ]
+    parts_list = ["Magnet","Heavyweight","Wings","Rollcage","Air Control","Winter Tires",
+                  "Start Boost","Wheelie Boost","Fume Boost","Flip Boost","Jump Shocks",
+                  "Landing Boost","Overcharged Turbo","Afterburner","Spoiler","Thrusters",
+                  "Fuel Boost","Coin Boost","Nitro"
+                  ]
+    
     if request.method == 'POST':
         print("Inserting")
         
         #All form fields as variables for validation and insertion
-        time=request.form["time"]
-        player=request.form["player"]
-        track_name=request.form["track_name"]
-        tune1=request.form["tune1"]
-        tune2=request.form["tune2"]
-        tune3=request.form["tune3"]
-        tune4=request.form["tune4"]
+        time=request.form.get("time","")
+        player=request.form.get("player","")
+        track_name=request.form.get("track_name","")
+        tune1=request.form.get("tune1","")
+        tune2=request.form.get("tune2","")
+        tune3=request.form.get("tune3","")
+        tune4=request.form.get("tune4","")
         tunes_list = [tune1,tune2,tune3,tune4]
-        vehicle_name=request.form["vehicle_name"]
-        print(vehicle_name)
-        slot1=request.form["slot1"]
-        slot2=request.form["slot2"]
-        slot3=request.form["slot3"]
+        vehicle_name=request.form.get("vehicle_name","")
+        slot1=request.form.get("slot1","")
+        slot2=request.form.get("slot2","")
+        slot3=request.form.get("slot3","")
         slot_list = [slot1,slot2,slot3]
-        parts_list = ["Nitro","Fuel_Boost","Coin_Boost"]
-        db.session.add_all([WR_Times(time=time, player=player),
-                       Tracks(track_name=track_name),
-                       Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4),
-                       Vehicles(vehicle_name=vehicle_name),
-                       Parts(slot1=slot1, slot2=slot2, slot3=slot3)
-        ])
+        new_time = WR_Times(time=time,player=player)
+        new_track = Tracks(track_name=track_name)
+        new_tune = Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4)
+        new_vehicle = Vehicles(vehicle_name=vehicle_name)
+        new_parts = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
+        
+        new_setup = Setups(wr_time=new_time,
+                           track=new_track,
+                           tune=new_tune,
+                           vehicle=new_vehicle,
+                           parts_combinations=new_parts
+                           )
 
         #Back end validation
         not_valid = False
@@ -179,10 +195,15 @@ def Home():
             not_valid = True
         
         if not_valid:
-            db.session.rollback()
+            print("Invalid Fields")
         else:
+            db.session.add(new_setup)
             db.session.commit()
-    return render_template('home.html',tracks_list=tracks_list)
+            print("Inserted")
+    return render_template('home.html',tracks_list=tracks_list,
+                           vehicles_list=vehicles_list,
+                           parts_list=parts_list
+                           )
 
 @app.route('/Delete', methods=['GET', 'POST'])
 def delete():
