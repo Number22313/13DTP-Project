@@ -2,47 +2,25 @@
 {% block content %}
 <body>
     <div class="form">Delete
-        <form method="POST" action="{{url_for('Home')}}">
+        <form method="POST" action="{{url_for('delete')}}">
             <div>
                 <table>
                     <tr>
-                        <td>Vehicle</td>
-                        <td>Time</td>
-                        <td>Player</td>
-                        <td>Track</td>
+                        <td>Setup</td>
                     </tr>
                     <tr>
                         <td>
-                            <select name="vehicle_name">
+                            <select name="setup">
                                 <option disabled hidden selected></option>
-                                <option value="Jeep">Jeep</option>
-                                <option value="MX">MX</option>
-                                <option value="SC">SC</option>
-                                <option value="SD">SD</option>
-                                <option value="ML">ML</option>
-                                <option value="test">test</option>
-                                <option value="test2">test2</option>
-                                <option value="test3">test3</option>
-                                <option value="test4">test4</option>
-                            </select>
-                        </td>
-                        <br>
-                        <td>
-                            <input type="number" name="time">
-                        </td>
-                        <br>
-                        <td>
-                            <input type="text" name="player">
-                        </td>
-                        <br>
-                        <td>
-                            <select>
-                                <option disabled hidden></option>
-                                <option value="Bottom_gear">Bottom Gear</option>
-                                <option value="No_skidding">No Skidding</option>
-                                <option value="Landing_drive">Landing Drive</option>
-                                <option value="Seesaw_road">Seesaw Road</option>
-                                <option value="Big_air">Big Air</option>
+                                {% for i in setups %}
+                                    <option value="{{i.setup_id}}">
+                                        {{i.wr_time.player}}/{{i.wr_time.time}} |
+                                        {{i.track.track_name}} |
+                                        {{i.tune.tune1}}/{{i.tune.tune2}}/{{i.tune.tune3}}/{{i.tune.tune4}} |
+                                        {{i.vehicle.vehicle_name}} |
+                                        {{i.parts_combinations.slot1}}/{{i.parts_combinations.slot2}}/{{i.parts_combinations.slot3}}
+                                    </option>
+                                {% endfor %}
                             </select>
                         </td>
                     </tr>
@@ -50,7 +28,7 @@
             </div>
             <br>
             <div>
-                <button type="submit">Delete</button>
+                <button type="submit" name="delete submit" value="delete">Delete</button>
             </div>
         </form>
     </div>

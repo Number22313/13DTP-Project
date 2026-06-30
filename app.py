@@ -123,148 +123,160 @@ def Home():
                   "Landing Boost","Overcharged Turbo","Afterburner","Spoiler","Thrusters",
                   "Fuel Boost","Coin Boost","Nitro"
                   ]
-    
+
     if request.method == 'POST':
-        print("Inserting")
-        
-        #All form fields as variables for validation and insertion
-        not_valid = False
-        time=request.form.get("time","")
-        player=request.form.get("player","")
-        track_name=request.form.get("track_name","")
-        tune1=request.form.get("tune1","")
-        tune2=request.form.get("tune2","")
-        tune3=request.form.get("tune3","")
-        tune4=request.form.get("tune4","")
-        try:
-            tune1 = int(tune1)
-            tune2 = int(tune2)
-            tune3 = int(tune3)
-            tune4 = int(tune4)
-            time = float(time)
-        except ValueError:
-            not_valid = True
-            tune1,tune2,tune3,tune4 = 0,0,0,0
-            time = 0.0
-        tunes_list = [tune1,tune2,tune3,tune4]
-        vehicle_name=request.form.get("vehicle_name","")
-        slot1=request.form.get("slot1","")
-        slot2=request.form.get("slot2","")
-        slot3=request.form.get("slot3","")
-        slot_list = [slot1,slot2,slot3]
-
-        #Back end validation
-
-        #Empty fields check
-        if (
-            not time or not player or not track_name or not tune1 
-            or not tune2 or not tune3 or not tune4 or not vehicle_name 
-            or not slot1 or not slot2 or not slot3
-        ):
-            print("Empty fields")
-            not_valid = True
-
-        #Valid fields check
-        if track_name not in tracks_list:
-            print("Not a valid track")
-            not_valid = True
-
-        for i in tunes_list:
+        insert_submit = request.form.get("insert submit")
+        if insert_submit == "insert":
+            print("Inserting")
+            
+            #All form fields as variables for validation and insertion
+            not_valid = False
+            time=request.form.get("time","")
+            player=request.form.get("player","")
+            track_name=request.form.get("track_name","")
+            tune1=request.form.get("tune1","")
+            tune2=request.form.get("tune2","")
+            tune3=request.form.get("tune3","")
+            tune4=request.form.get("tune4","")
             try:
-                tune_int = int(i)
-                if tune_int >= 21 or tune_int <= 0:
-                    print("Not a valid tune")
-                    not_valid = True
+                tune1 = int(tune1)
+                tune2 = int(tune2)
+                tune3 = int(tune3)
+                tune4 = int(tune4)
+                time = float(time)
             except ValueError:
-                print("Not a valid number")
+                not_valid = True
+                tune1,tune2,tune3,tune4 = 0,0,0,0
+                time = 0.0
+            tunes_list = [tune1,tune2,tune3,tune4]
+            vehicle_name=request.form.get("vehicle_name","")
+            slot1=request.form.get("slot1","")
+            slot2=request.form.get("slot2","")
+            slot3=request.form.get("slot3","")
+            slot_list = [slot1,slot2,slot3]
+
+            #Back end validation
+
+            #Empty fields check
+            if (
+                not time or not player or not track_name or not tune1 
+                or not tune2 or not tune3 or not tune4 or not vehicle_name 
+                or not slot1 or not slot2 or not slot3
+            ):
+                print("Empty fields")
                 not_valid = True
 
-        if vehicle_name not in vehicles_list:
-            print("Not a valid vehicle")
-            not_valid = True
-
-        for i in slot_list:
-            if i not in parts_list:
-                print("Not a valid part")
+            #Valid fields check
+            if track_name not in tracks_list:
+                print("Not a valid track")
                 not_valid = True
 
-        if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
-            print("Duped parts")
-            not_valid = True
-        
-        if not_valid:
-            print("Invalid Fields")
-        else:
-            #Search the db for matching fields
-            vehicle_query = Vehicles.query.filter_by(vehicle_name=vehicle_name).first()
-            if not vehicle_query:
-                vehicle_query = Vehicles(vehicle_name=vehicle_name)
-                db.session.add(vehicle_query)
+            for i in tunes_list:
+                try:
+                    tune_int = int(i)
+                    if tune_int >= 21 or tune_int <= 0:
+                        print("Not a valid tune")
+                        not_valid = True
+                except ValueError:
+                    print("Not a valid number")
+                    not_valid = True
 
-            track_query = Tracks.query.filter_by(track_name=track_name).first()
-            if not track_query:
-                track_query = Tracks(track_name=track_name)
-                db.session.add(track_query)
+            if vehicle_name not in vehicles_list:
+                print("Not a valid vehicle")
+                not_valid = True
+
+            for i in slot_list:
+                if i not in parts_list:
+                    print("Not a valid part")
+                    not_valid = True
+
+            if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
+                print("Duped parts")
+                not_valid = True
             
-            tune_query = Tunes.query.filter_by(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4).first()
-            if not tune_query:
-                tune_query = Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4)
-                db.session.add(tune_query)
-            
-            parts_query = Parts.query.filter_by(slot1=slot1, slot2=slot2, slot3=slot3).first()
-            if not parts_query:
-                parts_query = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
-                db.session.add(parts_query)
-            
-            db.session.flush()
-            
-            #Check if they match
-            setup_query = Setups.query.join(WR_Times).filter(
-                Setups.vehicle == vehicle_query,
-                Setups.track == track_query,
-                Setups.tune == tune_query,
-                Setups.parts_combinations == parts_query,
-                WR_Times.player == player
-            ).first()
-            
-            #If there is a duplicate:
-            if setup_query:
-                print("Already a setup")
-                if time < setup_query.wr_time.time:
-                    print("Faster time")
-                    setup_query.wr_time.time = time
-            #No duplicate
+            if not_valid:
+                print("Invalid Fields")
             else:
-                print("Doesnt exist yet")
-                time_query = WR_Times(time=time,player=player)
-                db.session.add(time_query)
+                #Search the db for matching fields
+                vehicle_query = Vehicles.query.filter_by(vehicle_name=vehicle_name).first()
+                if not vehicle_query:
+                    vehicle_query = Vehicles(vehicle_name=vehicle_name)
+                    db.session.add(vehicle_query)
+
+                track_query = Tracks.query.filter_by(track_name=track_name).first()
+                if not track_query:
+                    track_query = Tracks(track_name=track_name)
+                    db.session.add(track_query)
+                
+                tune_query = Tunes.query.filter_by(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4).first()
+                if not tune_query:
+                    tune_query = Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4)
+                    db.session.add(tune_query)
+                
+                parts_query = Parts.query.filter_by(slot1=slot1, slot2=slot2, slot3=slot3).first()
+                if not parts_query:
+                    parts_query = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
+                    db.session.add(parts_query)
+                
                 db.session.flush()
+                
+                #Check if they match
+                setup_query = Setups.query.join(WR_Times).filter(
+                    Setups.vehicle == vehicle_query,
+                    Setups.track == track_query,
+                    Setups.tune == tune_query,
+                    Setups.parts_combinations == parts_query,
+                    WR_Times.player == player
+                ).first()
+                
+                #If there is a duplicate:
+                if setup_query:
+                    print("Already a setup")
+                    if time < setup_query.wr_time.time:
+                        print("Faster time")
+                        setup_query.wr_time.time = time
 
-                setup = Setups(
-                    time_id = time_query.time_id,
-                    vehicle_id = vehicle_query.vehicle_id,
-                    track_id = track_query.track_id,
-                    tune_id = tune_query.tune_id,
-                    part_id = parts_query.part_id
-                )
-                db.session.add(setup)
+                #No duplicate
+                else:
+                    print("Doesnt exist yet")
+                    time_query = WR_Times(time=time,player=player)
+                    db.session.add(time_query)
+                    db.session.flush()
 
-            db.session.commit()
-            print("Inserted")
-    return render_template('home.html',tracks_list=tracks_list,
+                    setup = Setups(
+                        time_id = time_query.time_id,
+                        vehicle_id = vehicle_query.vehicle_id,
+                        track_id = track_query.track_id,
+                        tune_id = tune_query.tune_id,
+                        part_id = parts_query.part_id
+                    )
+                    db.session.add(setup)
+
+                db.session.commit()
+                print("Inserted")
+    return render_template('home.html',
+                           tracks_list=tracks_list,
                            vehicles_list=vehicles_list,
                            parts_list=parts_list
                            )
 
 @app.route('/Delete', methods=['GET', 'POST'])
 def delete():
-    if request.method == 'POST':
-        print("Deleting")
-        Vehicles.query.filter_by(vehicle_name=request.form["vehicle_name"]).delete()
-        WR_Times.query.filter_by(time=request.form["time"]).delete()
-        WR_Times.query.filter_by(player=request.form["player"]).delete()
-        db.session.commit()
-    return render_template('delete.html')
+    if request.method == "POST":
+        delete_submit = request.form.get("delete submit")
+        print(delete_submit)
+        if delete_submit == "delete":
+            setup = request.form.get("setup")
+            print("Found Setup "+ setup)
+
+            #delete the setup if it exists
+            if setup:
+                setup_id = Setups.query.get(int(setup))
+                db.session.delete(setup_id)
+                print("Deleted "+ setup)
+                db.session.commit()
+    setups = Setups.query.all()
+    return render_template('delete.html',setups=setups)
 
 @app.route('/Setups')
 def setups():
