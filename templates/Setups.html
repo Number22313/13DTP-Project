@@ -23,43 +23,28 @@
         {% endfor %}
     </table>
     <br>
-    <h1>Setups Insert</h1>
+    <br>
+    <br>
     <table>
         <tr>
-            <td>Times (ID,Time,Player)</td>
+            <td>Setup ID</td>
+            <td>Time/Player</td>
+            <td>Track</td>
+            <td>Tunes</td>
+            <td>Vehicle</td>
+            <td>Parts</td>
         </tr>
         
+        <!-- {% for i in results %}
         <tr>
-            <td>
-                <select>
-                    {% for time in times %}
-                    <option>
-                        {{ time.time_id}} / {{ time.time }} / {{ time.player }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </td>
-
-            <td>
-                <select>
-                    {% for track in tracks %}
-                    <option>
-                        {{ track.track_id }} / {{ track.track_name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </td>
-
-            <td>
-                <select>
-                    {% for time in times %}
-                    <option>
-                        {{ time.time_id}} / {{ time.time }} / {{ time.player }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </td>
+            <td>{{i.setup_id}}</td>
+            <td>{{setup.wr_time.time}} / {{setup.wr_time.player}}</td>
+            <td>{{setup.track.track_name}}</td>
+            <td>{{setup.tune.tune1}}, {{setup.tune.tune2}}, {{setup.tune.tune3}}, {{setup.tune.tune4}}</td>
+            <td>{{setup.vehicle.vehicle_name}}</td>
+            <td>{{setup.parts_combinations.slot1}}, {{setup.parts_combinations.slot2}}, {{setup.parts_combinations.slot3}}</td>
         </tr>
+        {% endfor %} -->
     </table>
 </body>
 {% endblock %}

@@ -35,7 +35,7 @@ a
     color: var(--text-color);
 }
 
-form
+.form
 {
     min-height: 25vh;
     background-color: rgb(59, 59, 59);
@@ -56,4 +56,9 @@ button[type="submit"]
 {
     display: flex;
     justify-content: center;
+}
+
+.search
+{
+    max-height: max-content;
 }

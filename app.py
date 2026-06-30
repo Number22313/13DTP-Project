@@ -254,10 +254,12 @@ def Home():
 
                 db.session.commit()
                 print("Inserted")
+
     return render_template('home.html',
                            tracks_list=tracks_list,
                            vehicles_list=vehicles_list,
-                           parts_list=parts_list
+                           parts_list=parts_list,
+                           
                            )
 
 @app.route('/Delete', methods=['GET', 'POST'])
@@ -278,7 +280,7 @@ def delete():
     setups = Setups.query.all()
     return render_template('delete.html',setups=setups)
 
-@app.route('/Setups')
+@app.route('/Setups', methods=['GET', 'POST'])
 def setups():
     setups = Setups.query.all()
     times = WR_Times.query.all()
@@ -286,6 +288,13 @@ def setups():
     tunes = Tunes.query.all()
     vehicles = Vehicles.query.all()
     parts = Parts.query.all()
+
+    if request.method == 'POST':
+        search_bar = request.form.get("search bar")
+        if search_bar != "":
+            print("Searching for: "+search_bar)
+            setup = Setups.query.filter(search_bar).first()
+            print(setup)
     return render_template('Setups.html',
                            setups=setups,
                            times=times,
