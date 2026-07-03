@@ -282,6 +282,8 @@ def delete():
 
 @app.route('/Setups', methods=['GET', 'POST'])
 def setups():
+    setup = []
+
     setups = Setups.query.all()
     times = WR_Times.query.all()
     tracks = Tracks.query.all()
@@ -291,17 +293,41 @@ def setups():
 
     if request.method == 'POST':
         search_bar = request.form.get("search bar")
+
+        #Convert the search to integer and float for tunes and times
+        try:
+            real = float(search_bar)
+        except ValueError:
+            real = None
+        
+        try:
+            integer = int(search_bar)
+        except ValueError:
+            integer = None
+
+        #Search and filter data
         if search_bar != "":
             print("Searching for: "+search_bar)
-            setup = Setups.query.filter(search_bar).first()
-            print(setup)
+            setup = Setups.query.filter((Setups.track.has(Tracks.track_name == search_bar))|
+                                            (Setups.wr_time.has((WR_Times.time == real)|
+                                                                (WR_Times.player == search_bar)))|
+                                            (Setups.tune.has((Tunes.tune1 == integer)|
+                                                             (Tunes.tune2 == integer)|
+                                                             (Tunes.tune3 == integer)|
+                                                             (Tunes.tune4 == integer)))|
+                                            (Setups.vehicle.has(Vehicles.vehicle_name == search_bar))|
+                                            (Setups.parts_combinations.has((Parts.slot1 == search_bar)|
+                                                                           (Parts.slot2 == search_bar)|
+                                                                           (Parts.slot3 == search_bar)))
+                                            ).all()
     return render_template('Setups.html',
                            setups=setups,
                            times=times,
                            tracks=tracks,
                            tunes=tunes,
                            vehicles=vehicles,
-                           parts=parts)
+                           parts=parts,
+                           setup=setup)
 
 @app.route('/Times')
 def times():
