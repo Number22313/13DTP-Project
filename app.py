@@ -291,35 +291,34 @@ def setups():
     vehicles = Vehicles.query.all()
     parts = Parts.query.all()
 
-    if request.method == 'POST':
-        search_bar = request.form.get("search bar")
+    search_bar = request.args.get("search_bar")
+    print(search_bar)
+    #Convert the search to integer and float for tunes and times
+    try:
+        real = float(search_bar)
+    except ValueError:
+        real = None
+    
+    try:
+        integer = int(search_bar)
+    except ValueError:
+        integer = None
 
-        #Convert the search to integer and float for tunes and times
-        try:
-            real = float(search_bar)
-        except ValueError:
-            real = None
-        
-        try:
-            integer = int(search_bar)
-        except ValueError:
-            integer = None
-
-        #Search and filter data
-        if search_bar != "":
-            print("Searching for: "+search_bar)
-            setup = Setups.query.filter((Setups.track.has(Tracks.track_name == search_bar))|
-                                            (Setups.wr_time.has((WR_Times.time == real)|
-                                                                (WR_Times.player == search_bar)))|
-                                            (Setups.tune.has((Tunes.tune1 == integer)|
-                                                             (Tunes.tune2 == integer)|
-                                                             (Tunes.tune3 == integer)|
-                                                             (Tunes.tune4 == integer)))|
-                                            (Setups.vehicle.has(Vehicles.vehicle_name == search_bar))|
-                                            (Setups.parts_combinations.has((Parts.slot1 == search_bar)|
-                                                                           (Parts.slot2 == search_bar)|
-                                                                           (Parts.slot3 == search_bar)))
-                                            ).all()
+    #Search and filter data
+    if search_bar != "":
+        print("Searching for: "+search_bar)
+        setup = Setups.query.filter((Setups.track.has(Tracks.track_name.ilike(search_bar)))|
+                                        (Setups.wr_time.has((WR_Times.time == real)|
+                                                            (WR_Times.player.ilike(search_bar))))|
+                                        (Setups.tune.has((Tunes.tune1 == integer)|
+                                                            (Tunes.tune2 == integer)|
+                                                            (Tunes.tune3 == integer)|
+                                                            (Tunes.tune4 == integer)))|
+                                        (Setups.vehicle.has(Vehicles.vehicle_name.ilike(search_bar)))|
+                                        (Setups.parts_combinations.has((Parts.slot1.ilike(search_bar))|
+                                                                        (Parts.slot2.ilike(search_bar))|
+                                                                        (Parts.slot3.ilike(search_bar))))
+                                        ).all()
     return render_template('Setups.html',
                            setups=setups,
                            times=times,
@@ -327,7 +326,8 @@ def setups():
                            tunes=tunes,
                            vehicles=vehicles,
                            parts=parts,
-                           setup=setup)
+                           setup=setup,
+                           search_bar=search_bar)
 
 @app.route('/Times')
 def times():
@@ -354,6 +354,10 @@ def parts():
     parts = Parts.query.all()
     return render_template('Parts.html', parts=parts)
 
+
+@app.route('/Stats')
+def stats():
+    return render_template('Stats.html')
 
 
 if __name__ == '__main__':
