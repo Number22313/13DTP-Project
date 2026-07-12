@@ -8,56 +8,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/dat
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
-
-class Setups(db.Model):
-    __tablename__ = "Setups"
-    setup_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    time_id = db.Column(db.Integer, db.ForeignKey("WR_Times.time_id"), nullable=False)
-    track_id = db.Column(db.Integer, db.ForeignKey("Tracks.track_id"), nullable=False)
-    tune_id = db.Column(db.Integer, db.ForeignKey("Tunes.tune_id"), nullable=False)
-    vehicle_id = db.Column(db.Integer, db.ForeignKey("Vehicles.vehicle_id"), nullable=False)
-    part_id = db.Column(db.Integer, db.ForeignKey("Part Combinations.part_id"), nullable=False)
-    wr_time = db.relationship("WR_Times")
-    track = db.relationship("Tracks")
-    tune = db.relationship("Tunes")
-    vehicle = db.relationship("Vehicles")
-    parts_combinations = db.relationship("Parts")
-
-class WR_Times(db.Model):
-    __tablename__ = "WR_Times"
-    time_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    time = db.Column(db.REAL, nullable=False)
-    player = db.Column(db.Text, nullable=False)
-
-class Tracks(db.Model):
-    __tablename__ = "Tracks"
-    track_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
-    track_name = db.Column(db.Text, nullable=False)
-
-class Tunes(db.Model):
-    __tablename__ = "Tunes"
-    tune_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
-    tune1 = db.Column(db.Integer, nullable=False)
-    tune2 = db.Column(db.Integer, nullable=False)
-    tune3 = db.Column(db.Integer, nullable=False)
-    tune4 = db.Column(db.Integer, nullable=False)
-
-class Vehicles(db.Model):
-    __tablename__ = "Vehicles"
-    vehicle_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
-    vehicle_name = db.Column(db.Text, unique=True)
-
-class Parts(db.Model):
-    __tablename__ = "Part Combinations"
-    part_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
-    slot1 = db.Column(db.Text, nullable=False)
-    slot2 = db.Column(db.Text, nullable=False)
-    slot3 = db.Column(db.Text, nullable=False)
-
-
-@app.route('/', methods=['GET', 'POST'])
-def Home():
-    tracks_list = ["Bottom Gear","No Skidding","Cuptown Relax","Landing Drive","Seesaw Road",
+tracks_list = ["Bottom Gear","No Skidding","Cuptown Relax","Landing Drive","Seesaw Road",
                    "Big Air","Beyond Climberdome","Legendary Apex","Trial of Fall",
                    "Trial of Courage","Trial of Balance","Forbidden Forest","Captain's Log",
                    "The Pond","Racing Wild","The Fast Lions","Sunburnt","Tumbleweeds",
@@ -111,19 +62,68 @@ def Home():
                    "Canyon Arena","Cuptown","Sky Rock Outpost","Forest Trials","Intense City",
                    "Arena Gauntlet","Raging Winter"
                    ]
-    vehicles_list = ["Hill Climber","Scooter","Bus","Hill Climber Mk2","Tractor","Motocross",
+vehicles_list = ["Hill Climber","Scooter","Bus","Hill Climber Mk2","Tractor","Motocross",
                      "Dune Buggy","Sports Car","Monster Truck","Rotator","Super Diesel",
                      "Chopper","Tank","Lowrider","Snowmobile","Monowheel","Beast",
                      "Rally Car","Formula","Muscle Car","Racing Truck","Hot Rod","CC-EV",
                      "Superbike","Supercar","Moonlander","Rock Bouncer","Hoverbike","Raider",
                      "Glider","Bolt","ATV","Offroader","Stocker"
                      ]
-    parts_list = ["Magnet","Heavyweight","Wings","Rollcage","Air Control","Winter Tires",
+parts_list = ["Magnet","Heavyweight","Wings","Rollcage","Air Control","Winter Tires",
                   "Start Boost","Wheelie Boost","Fume Boost","Flip Boost","Jump Shocks",
                   "Landing Boost","Overcharged Turbo","Afterburner","Spoiler","Thrusters",
                   "Fuel Boost","Coin Boost","Nitro"
                   ]
 
+
+class Setups(db.Model):
+    __tablename__ = "Setups"
+    setup_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    time_id = db.Column(db.Integer, db.ForeignKey("WR_Times.time_id"), nullable=False)
+    track_id = db.Column(db.Integer, db.ForeignKey("Tracks.track_id"), nullable=False)
+    tune_id = db.Column(db.Integer, db.ForeignKey("Tunes.tune_id"), nullable=False)
+    vehicle_id = db.Column(db.Integer, db.ForeignKey("Vehicles.vehicle_id"), nullable=False)
+    part_id = db.Column(db.Integer, db.ForeignKey("Part Combinations.part_id"), nullable=False)
+    wr_time = db.relationship("WR_Times")
+    track = db.relationship("Tracks")
+    tune = db.relationship("Tunes")
+    vehicle = db.relationship("Vehicles")
+    parts_combinations = db.relationship("Parts")
+
+class WR_Times(db.Model):
+    __tablename__ = "WR_Times"
+    time_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    time = db.Column(db.REAL, nullable=False)
+    player = db.Column(db.Text, nullable=False)
+
+class Tracks(db.Model):
+    __tablename__ = "Tracks"
+    track_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+    track_name = db.Column(db.Text, nullable=False)
+
+class Tunes(db.Model):
+    __tablename__ = "Tunes"
+    tune_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+    tune1 = db.Column(db.Integer, nullable=False)
+    tune2 = db.Column(db.Integer, nullable=False)
+    tune3 = db.Column(db.Integer, nullable=False)
+    tune4 = db.Column(db.Integer, nullable=False)
+
+class Vehicles(db.Model):
+    __tablename__ = "Vehicles"
+    vehicle_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+    vehicle_name = db.Column(db.Text, unique=True)
+
+class Parts(db.Model):
+    __tablename__ = "Part Combinations"
+    part_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+    slot1 = db.Column(db.Text, nullable=False)
+    slot2 = db.Column(db.Text, nullable=False)
+    slot3 = db.Column(db.Text, nullable=False)
+
+
+@app.route('/', methods=['GET', 'POST'])
+def Home():
     if request.method == 'POST':
         insert_submit = request.form.get("insert submit")
         if insert_submit == "insert":
@@ -282,52 +282,19 @@ def delete():
 
 @app.route('/Setups', methods=['GET', 'POST'])
 def setups():
-    setup = []
-
     setups = Setups.query.all()
     times = WR_Times.query.all()
     tracks = Tracks.query.all()
     tunes = Tunes.query.all()
     vehicles = Vehicles.query.all()
     parts = Parts.query.all()
-
-    search_bar = request.args.get("search_bar")
-    print(search_bar)
-    #Convert the search to integer and float for tunes and times
-    try:
-        real = float(search_bar)
-    except ValueError:
-        real = None
-    
-    try:
-        integer = int(search_bar)
-    except ValueError:
-        integer = None
-
-    #Search and filter data
-    if search_bar != "":
-        print("Searching for: "+search_bar)
-        setup = Setups.query.filter((Setups.track.has(Tracks.track_name.ilike(search_bar)))|
-                                        (Setups.wr_time.has((WR_Times.time == real)|
-                                                            (WR_Times.player.ilike(search_bar))))|
-                                        (Setups.tune.has((Tunes.tune1 == integer)|
-                                                            (Tunes.tune2 == integer)|
-                                                            (Tunes.tune3 == integer)|
-                                                            (Tunes.tune4 == integer)))|
-                                        (Setups.vehicle.has(Vehicles.vehicle_name.ilike(search_bar)))|
-                                        (Setups.parts_combinations.has((Parts.slot1.ilike(search_bar))|
-                                                                        (Parts.slot2.ilike(search_bar))|
-                                                                        (Parts.slot3.ilike(search_bar))))
-                                        ).all()
     return render_template('Setups.html',
                            setups=setups,
                            times=times,
                            tracks=tracks,
                            tunes=tunes,
                            vehicles=vehicles,
-                           parts=parts,
-                           setup=setup,
-                           search_bar=search_bar)
+                           parts=parts)
 
 @app.route('/Times')
 def times():
@@ -357,7 +324,64 @@ def parts():
 
 @app.route('/Stats')
 def stats():
-    return render_template('Stats.html')
+    setup = []
+
+    vehicle = request.args.get("vehicle")
+    player = request.args.get("player")
+    search_bar = request.args.get("search_bar")
+    
+    setup = Setups.query.join(WR_Times).join(Vehicles).order_by(WR_Times.time.asc())
+    players = set()
+    for i in WR_Times.query.all():
+        players.add(i.player)
+    players = sorted(players)
+    print(players)
+
+    #Filter setups by vehicle
+    if vehicle:
+        setup = setup.filter(Vehicles.vehicle_name == vehicle)
+
+    #Filter setups by player
+    if player:
+        setup = setup.filter
+
+    #Convert the search to integer and float for tunes and times
+    if search_bar:
+        try:
+            real = float(search_bar)
+        except ValueError:
+            real = None
+
+        try:
+            integer = int(search_bar)
+        except ValueError:
+            integer = None
+
+        #Search and filter data
+        print("Searching for: "+search_bar)
+        setup = setup.filter((Setups.track.has(Tracks.track_name.ilike(search_bar)))|
+                                        (Setups.wr_time.has((WR_Times.time == real)|
+                                                            (WR_Times.player.ilike(search_bar))))|
+                                        (Setups.tune.has((Tunes.tune1 == integer)|
+                                                            (Tunes.tune2 == integer)|
+                                                            (Tunes.tune3 == integer)|
+                                                            (Tunes.tune4 == integer)))|
+                                        (Setups.vehicle.has(Vehicles.vehicle_name.ilike(search_bar)))|
+                                        (Setups.parts_combinations.has((Parts.slot1.ilike(search_bar))|
+                                                                        (Parts.slot2.ilike(search_bar))|
+                                                                        (Parts.slot3.ilike(search_bar))))
+                                        )
+
+    if not search_bar and not vehicle:
+        result = []
+    else:
+        result = setup.all()
+
+    return render_template('Stats.html',
+                           vehicles_list=vehicles_list,
+                           search_bar=search_bar,
+                           result=result,
+                           players=players)
 
 
 if __name__ == '__main__':

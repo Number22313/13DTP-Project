@@ -33,6 +33,15 @@ a
 {
     text-decoration: none;
     color: var(--text-color);
+    padding-left: 3vh;
+    padding-right: 3vh;
+    padding: 1vh;
+}
+
+a:hover
+{
+    background-color: blue;
+    border-radius: 1vh;
 }
 
 .form

@@ -22,29 +22,5 @@
         </tr>
         {% endfor %}
     </table>
-    <br>
-    <br>
-    <br>
-    <table>
-        <tr>
-            <td>Setup ID</td>
-            <td>Time/Player</td>
-            <td>Track</td>
-            <td>Tunes</td>
-            <td>Vehicle</td>
-            <td>Parts</td>
-        </tr>
-        
-        {% for i in setup %}
-        <tr>
-            <td>{{i.setup_id}}</td>
-            <td>{{i.wr_time.time}} / {{i.wr_time.player}}</td>
-            <td>{{i.track.track_name}}</td>
-            <td>{{i.tune.tune1}}, {{i.tune.tune2}}, {{i.tune.tune3}}, {{i.tune.tune4}}</td>
-            <td>{{i.vehicle.vehicle_name}}</td>
-            <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
-        </tr>
-        {% endfor %}
-    </table>
 </body>
 {% endblock %}
