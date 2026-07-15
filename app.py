@@ -144,7 +144,7 @@ def Home():
                 tune3 = int(tune3)
                 tune4 = int(tune4)
                 time = float(time)
-            except ValueError:
+            except (TypeError,ValueError):
                 not_valid = True
                 tune1,tune2,tune3,tune4 = 0,0,0,0
                 time = 0.0
@@ -326,27 +326,74 @@ def parts():
 def stats():
     setup = []
 
-    vehicle = request.args.get("vehicle")
-    player = request.args.get("player")
-    search_bar = request.args.get("search_bar")
+    vehicle = request.args.get("vehicle") or None
+    time = request.args.get("time") or None
+    player = request.args.get("player") or None
+    track = request.args.get("track") or None
+    tune1 = request.args.get("tune1") or None
+    tune2 = request.args.get("tune2") or None
+    tune3 = request.args.get("tune3") or None
+    tune4 = request.args.get("tune4") or None
+    slot1 = request.args.get("slot1") or None
+    slot2 = request.args.get("slot2") or None
+    slot3 = request.args.get("slot3") or None
+    tunes = [(tune1, Tunes.tune1),
+            (tune2, Tunes.tune2),
+            (tune3, Tunes.tune3),
+            (tune4, Tunes.tune4)]
+        
+
+    search_bar = request.args.get("search_bar") or None
     
-    setup = Setups.query.join(WR_Times).join(Vehicles).order_by(WR_Times.time.asc())
+    setup = Setups.query.join(WR_Times).join(Vehicles).join(Tracks).join(Tunes).join(Parts).order_by(WR_Times.time.asc())
     players = set()
+
     for i in WR_Times.query.all():
         players.add(i.player)
     players = sorted(players)
-    print(players)
 
-    #Filter setups by vehicle
+    #Filter setups with actual inputs
     if vehicle:
         setup = setup.filter(Vehicles.vehicle_name == vehicle)
+    
+    if time:
+        setup = setup.filter(WR_Times.time == time)
 
-    #Filter setups by player
     if player:
-        setup = setup.filter
+        setup = setup.filter(WR_Times.player == player)
 
-    #Convert the search to integer and float for tunes and times
+    if track:
+        setup = setup.filter(Tracks.track_name == track)
+    
+    for value,column in tunes:
+        if value:
+            try:
+                value = int(value)
+                if 21 > value > 0:
+                    setup = setup.filter(column == value)
+            except ValueError:
+                pass
+            
+    if slot1:
+        setup = setup.filter((Parts.slot1 == slot1)|
+                             (Parts.slot2 == slot1)|
+                             (Parts.slot3 == slot1))
+    
+    if slot2:
+        setup = setup.filter((Parts.slot1 == slot2)|
+                             (Parts.slot2 == slot2)|
+                             (Parts.slot3 == slot2))
+        
+    if slot3:
+        setup = setup.filter((Parts.slot1 == slot2)|
+                             (Parts.slot2 == slot2)|
+                             (Parts.slot3 == slot2))
+    
+        
+
+
     if search_bar:
+        #Convert the search to an integer and float
         try:
             real = float(search_bar)
         except ValueError:
@@ -372,14 +419,16 @@ def stats():
                                                                         (Parts.slot3.ilike(search_bar))))
                                         )
 
-    if not search_bar and not vehicle:
+    if not any([search_bar,vehicle,player,time,track,tune1,tune2,tune3,tune4,slot1,slot2,slot3]):
         result = []
     else:
         result = setup.all()
 
     return render_template('Stats.html',
                            vehicles_list=vehicles_list,
-                           search_bar=search_bar,
+                           tracks_list=tracks_list,
+                           parts_list=parts_list,
+                           search_bar=search_bar or "",
                            result=result,
                            players=players)
 

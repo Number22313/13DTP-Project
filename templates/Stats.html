@@ -11,14 +11,44 @@
                 {% for i in vehicles_list %}
                     <option value="{{i}}">{{i}}</option>
                 {% endfor %}
-            </select>
+            </select><br>
+
+            Time
+            <input type="number" step="any" name="time"><br>
+
             Player
             <select name="player">
                 <option value="" disabled hidden selected></option>
                 {% for i in players %}
                     <option value="{{i}}">{{i}}</option>
                 {% endfor %}
-            </select>
+            </select><br>
+
+            Track
+            <select name="track">
+                <option value="" disabled hidden selected></option>
+                {% for i in tracks_list %}
+                    <option value="{{i}}">{{i}}</option>
+                {% endfor %}
+            </select><br>
+
+            <div>Tunes
+                <input type="number" max="20" min="1" name="tune1">
+                <input type="number" max="20" min="1" name="tune2">
+                <input type="number" max="20" min="1" name="tune3">
+                <input type="number" max="20" min="1" name="tune4">
+            </div>
+
+            <div>Parts
+                {% for i in range(3) %}
+                    <select name="slot{{(i + 1)}}">
+                        <option value="" disabled hidden selected></option>
+                        {% for x in parts_list %}
+                            <option value="{{x}}">{{x}}</option>
+                        {% endfor %}
+                    </select>
+                {% endfor %}
+            </div><br>
 
             <input type="search" name="search_bar" value="{{search_bar}}">
             <button type="submit">enter</button>
