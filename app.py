@@ -325,6 +325,7 @@ def parts():
 @app.route('/Stats')
 def stats():
     setup = []
+    result_errors = []
 
     vehicle = request.args.get("vehicle") or None
     time = request.args.get("time") or None
@@ -348,22 +349,38 @@ def stats():
     setup = Setups.query.join(WR_Times).join(Vehicles).join(Tracks).join(Tunes).join(Parts).order_by(WR_Times.time.asc())
     players = set()
 
-    for i in WR_Times.query.all():
-        players.add(i.player)
+    for i in Setups.query.join(WR_Times).all():
+        players.add(i.wr_time.player)
     players = sorted(players)
 
     #Filter setups with actual inputs
     if vehicle:
-        setup = setup.filter(Vehicles.vehicle_name == vehicle)
+        if vehicle in vehicles_list:
+            setup = setup.filter(Vehicles.vehicle_name == vehicle)
+        else:
+            result_errors.append(f"{vehicle} is not a valid vehicle")
     
     if time:
-        setup = setup.filter(WR_Times.time == time)
+        try:
+            time = int(time)
+            if time > 0:
+                setup = setup.filter(WR_Times.time == time)
+            else:
+                result_errors.append(f"time must be greater than 0")
+        except ValueError:
+            result_errors.append(f"{time} is not a number")
 
     if player:
-        setup = setup.filter(WR_Times.player == player)
+        if player in players:
+            setup = setup.filter(Setups.wr_time.player == player)
+        else:
+            result_errors.append(f"{player} has no setups")
 
     if track:
-        setup = setup.filter(Tracks.track_name == track)
+        if track in tracks_list:
+            setup = setup.filter(Tracks.track_name == track)
+        else:
+            result_errors.append(f"{track} is not a track")
     
     for value,column in tunes:
         if value:
@@ -371,23 +388,34 @@ def stats():
                 value = int(value)
                 if 21 > value > 0:
                     setup = setup.filter(column == value)
+                else:
+                    result_errors.append(f"{value} is not between 1 and 20")
             except ValueError:
-                pass
+                result_errors.append(f"{value} is not an integer")
             
     if slot1:
-        setup = setup.filter((Parts.slot1 == slot1)|
-                             (Parts.slot2 == slot1)|
-                             (Parts.slot3 == slot1))
+        if slot1 in parts_list:
+            setup = setup.filter((Parts.slot1 == slot1)|
+                                (Parts.slot2 == slot1)|
+                                (Parts.slot3 == slot1))
+        else:
+            result_errors.append(f"{slot1} is not a valid part")
     
     if slot2:
-        setup = setup.filter((Parts.slot1 == slot2)|
-                             (Parts.slot2 == slot2)|
-                             (Parts.slot3 == slot2))
+        if slot2 in parts_list:
+            setup = setup.filter((Parts.slot1 == slot2)|
+                                (Parts.slot2 == slot2)|
+                                (Parts.slot3 == slot2))
+        else:
+            result_errors.append(f"{slot2} is not a valid part")
         
     if slot3:
-        setup = setup.filter((Parts.slot1 == slot2)|
-                             (Parts.slot2 == slot2)|
-                             (Parts.slot3 == slot2))
+        if slot3 in parts_list:
+            setup = setup.filter((Parts.slot1 == slot3)|
+                                (Parts.slot2 == slot3)|
+                                (Parts.slot3 == slot3))
+        else:
+            result_errors.append(f"{slot3} is not a valid part")
     
         
 
@@ -430,7 +458,8 @@ def stats():
                            parts_list=parts_list,
                            search_bar=search_bar or "",
                            result=result,
-                           players=players)
+                           players=players,
+                           result_errors=result_errors)
 
 
 if __name__ == '__main__':

@@ -50,6 +50,14 @@
                 {% endfor %}
             </div><br>
 
+            {% if result_errors%}
+                <div>
+                    {% for i in result_errors %}
+                        <p>{{i}},</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <input type="search" name="search_bar" value="{{search_bar}}">
             <button type="submit">enter</button>
         </form>
