@@ -322,8 +322,8 @@ def parts():
     return render_template('Parts.html', parts=parts)
 
 
-@app.route('/Stats')
-def stats():
+@app.route('/Search')
+def search():
     setup = []
     result_errors = []
 
@@ -342,16 +342,22 @@ def stats():
             (tune2, Tunes.tune2),
             (tune3, Tunes.tune3),
             (tune4, Tunes.tune4)]
+    vehicles_options = []
+    for a in (db.session.query(Vehicles.vehicle_name).join(Setups).distinct().all()):
+        vehicles_options.append(a[0])
+    
+    tracks_options = []
+    for b in (db.session.query(Tracks.track_name).join(Setups).distinct().all()):
+        tracks_options.append(b[0])
+    
+    players_options = []
+    for c in (db.session.query(WR_Times.player).join(Setups).distinct().all()):
+        players_options.append(c[0])
         
 
     search_bar = request.args.get("search_bar") or None
     
     setup = Setups.query.join(WR_Times).join(Vehicles).join(Tracks).join(Tunes).join(Parts).order_by(WR_Times.time.asc())
-    players = set()
-
-    for i in Setups.query.join(WR_Times).all():
-        players.add(i.wr_time.player)
-    players = sorted(players)
 
     #Filter setups with actual inputs
     if vehicle:
@@ -371,7 +377,7 @@ def stats():
             result_errors.append(f"{time} is not a number")
 
     if player:
-        if player in players:
+        if player in players_options:
             setup = setup.filter(Setups.wr_time.player == player)
         else:
             result_errors.append(f"{player} has no setups")
@@ -447,19 +453,27 @@ def stats():
                                                                         (Parts.slot3.ilike(search_bar))))
                                         )
 
+    #blank field(s)
     if not any([search_bar,vehicle,player,time,track,tune1,tune2,tune3,tune4,slot1,slot2,slot3]):
+        result = Setups.query.all()
+    
+    #invalid field(s)
+    elif result_errors:
         result = []
+    
+    #valid field(s)
     else:
         result = setup.all()
 
-    return render_template('Stats.html',
-                           vehicles_list=vehicles_list,
+    return render_template('Search.html',
+                           vehicles_options=vehicles_options,
                            tracks_list=tracks_list,
                            parts_list=parts_list,
                            search_bar=search_bar or "",
                            result=result,
-                           players=players,
-                           result_errors=result_errors)
+                           players=players_options,
+                           result_errors=result_errors,
+                           track=track)
 
 
 if __name__ == '__main__':

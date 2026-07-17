@@ -4,11 +4,11 @@
     <h1>Leaderboards</h1>
 
     <div>
-        <form method="GET" action="{{ url_for('stats') }}">
+        <form method="GET" action="{{ url_for('search') }}">
             Vehicle
             <select name="vehicle">
                 <option value="" disabled hidden selected></option>
-                {% for i in vehicles_list %}
+                {% for i in vehicles_options %}
                     <option value="{{i}}">{{i}}</option>
                 {% endfor %}
             </select><br>
@@ -65,39 +65,28 @@
 
     <div>
         <table>
-            {% for i in leaderboard %}
-            <tr>
-                <td>{{i.setup_id}}</td>
-                <td>{{i.wr_time.time}}</td>
-                <td>{{i.track.track_name}}</td>
-                <td>{{i.tune.tune1}}, {{i.tune.tune2}}, {{i.tune.tune3}}, {{i.tune.tune4}}</td>
-                <td>{{i.vehicle.vehicle_name}}</td>
-                <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <div>
-        <table>
-            <tr>
-                <td>Setup ID</td>
-                <td>Time/Player</td>
-                <td>Track</td>
-                <td>Tunes</td>
-                <td>Vehicle</td>
-                <td>Parts</td>
-            </tr>
-            {% for i in result %}
-            <tr>
-                <td>{{i.setup_id}}</td>
-                <td>{{i.wr_time.time}} / {{i.wr_time.player}}</td>
-                <td>{{i.track.track_name}}</td>
-                <td>{{i.tune.tune1}}, {{i.tune.tune2}}, {{i.tune.tune3}}, {{i.tune.tune4}}</td>
-                <td>{{i.vehicle.vehicle_name}}</td>
-                <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
-            </tr>
-            {% endfor %}
+            <thead>
+                <tr>
+                    <td>Setup ID</td>
+                    <td>Time/Player</td>
+                    <td>Track</td>
+                    <td>Tunes</td>
+                    <td>Vehicle</td>
+                    <td>Parts</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in result %}
+                <tr {% if loop.first %} class="wr" {% endif %}>
+                    <td>{{i.setup_id}}</td>
+                    <td>{{i.wr_time.time}} / {{i.wr_time.player}}</td>
+                    <td>{{i.track.track_name}}</td>
+                    <td>{{i.tune.tune1}}, {{i.tune.tune2}}, {{i.tune.tune3}}, {{i.tune.tune4}}</td>
+                    <td>{{i.vehicle.vehicle_name}}</td>
+                    <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 </body>
