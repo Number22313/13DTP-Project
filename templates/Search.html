@@ -77,7 +77,7 @@
             </thead>
             <tbody>
                 {% for i in result %}
-                <tr {% if loop.first %} class="wr" {% endif %}>
+                <tr>
                     <td>{{i.setup_id}}</td>
                     <td>{{i.wr_time.time}} / {{i.wr_time.player}}</td>
                     <td>{{i.track.track_name}}</td>

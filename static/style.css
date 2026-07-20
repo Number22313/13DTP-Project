@@ -71,8 +71,3 @@ button[type="submit"]
 {
     max-height: max-content;
 }
-
-.wr td
-{
-    background-color: goldenrod !important;
-}

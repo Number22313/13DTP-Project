@@ -73,5 +73,15 @@
             </div>
         </form>
     </div>
+
+    <div>
+        {% if insert_errors %}
+            <div>
+                {% for i in insert_errors %}
+                    <p>{{i}}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 </body>
 {% endblock %}

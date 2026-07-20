@@ -124,6 +124,7 @@ class Parts(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def Home():
+    insert_errors = []
     if request.method == 'POST':
         insert_submit = request.form.get("insert submit")
         if insert_submit == "insert":
@@ -143,11 +144,9 @@ def Home():
                 tune2 = int(tune2)
                 tune3 = int(tune3)
                 tune4 = int(tune4)
-                time = float(time)
             except (TypeError,ValueError):
                 not_valid = True
                 tune1,tune2,tune3,tune4 = 0,0,0,0
-                time = 0.0
             tunes_list = [tune1,tune2,tune3,tune4]
             vehicle_name=request.form.get("vehicle_name","")
             slot1=request.form.get("slot1","")
@@ -157,45 +156,56 @@ def Home():
 
             #Back end validation
 
+            #Valid fields check
+
             #Empty fields check
-            if (
-                not time or not player or not track_name or not tune1 
+            if (not time or not player or not track_name or not tune1 
                 or not tune2 or not tune3 or not tune4 or not vehicle_name 
-                or not slot1 or not slot2 or not slot3
-            ):
-                print("Empty fields")
+                or not slot1 or not slot2 or not slot3):
+                insert_errors = []
+                insert_errors.append("Not all fields are filled")
                 not_valid = True
 
-            #Valid fields check
+
             if track_name not in tracks_list:
-                print("Not a valid track")
+                insert_errors.append(f"{track_name} is not a valid track")
                 not_valid = True
+            
+            if time:
+                try:
+                    time = float(time)
+                    print(time)
+                    if time < 0:
+                        insert_errors.append(f"{time} is not a valid time")
+                        not_valid = True
+                except(ValueError,TypeError):
+                    insert_errors.append(f"{time} is not a number")
 
             for i in tunes_list:
                 try:
                     tune_int = int(i)
                     if tune_int >= 21 or tune_int <= 0:
-                        print("Not a valid tune")
+                        insert_errors.append(f"{tune_int} is not a valid tune")
                         not_valid = True
                 except ValueError:
-                    print("Not a valid number")
+                    insert_errors.append(f"{tune_int} is not a number")
                     not_valid = True
 
             if vehicle_name not in vehicles_list:
-                print("Not a valid vehicle")
+                insert_errors.append(f"{vehicle_name} is not a valid vehicle")
                 not_valid = True
 
             for i in slot_list:
                 if i not in parts_list:
-                    print("Not a valid part")
+                    insert_errors.append(f"{i} is not a valid part")
                     not_valid = True
 
             if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
-                print("Duped parts")
+                insert_errors.append("Duped parts")
                 not_valid = True
             
             if not_valid:
-                print("Invalid Fields")
+                insert_errors.append("Invalid Fields")
             else:
                 #Search the db for matching fields
                 vehicle_query = Vehicles.query.filter_by(vehicle_name=vehicle_name).first()
@@ -217,6 +227,7 @@ def Home():
                 if not parts_query:
                     parts_query = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
                     db.session.add(parts_query)
+
                 
                 db.session.flush()
                 
@@ -233,7 +244,7 @@ def Home():
                 if setup_query:
                     print("Already a setup")
                     if time < setup_query.wr_time.time:
-                        print("Faster time")
+                        insert_errors.append("Updated")
                         setup_query.wr_time.time = time
 
                 #No duplicate
@@ -253,13 +264,13 @@ def Home():
                     db.session.add(setup)
 
                 db.session.commit()
-                print("Inserted")
+                insert_errors.append("Inserted")
 
     return render_template('home.html',
                            tracks_list=tracks_list,
                            vehicles_list=vehicles_list,
                            parts_list=parts_list,
-                           
+                           insert_errors=insert_errors
                            )
 
 @app.route('/Delete', methods=['GET', 'POST'])
