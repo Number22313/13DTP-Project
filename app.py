@@ -275,17 +275,16 @@ def Home():
 def delete():
     if request.method == "POST":
         delete_submit = request.form.get("delete submit")
-        print(delete_submit)
         if delete_submit == "delete":
             setup = request.form.get("setup")
             print("Found Setup "+ setup)
 
             #delete the setup if it exists
             if setup:
-                old_player = WR_Times.query.filter(not Setups.wr_time.any().all())
+                old_player = WR_Times.query.filter(Setups.wr_time.has(WR_Times.player == WR_Times.player)).all()
                 for i in old_player:
-                    print("Child data to be deleted: "+i.player)
-                db.session.add(old_player)
+                    print(f"Child data to be deleted: {i}")
+                #db.session.add(old_player)
                 #db.session.delete(setup_id)
                 print("Deleted "+ setup)
                 #db.session.commit()
