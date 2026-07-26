@@ -1,54 +1,70 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
-    <h1>Leaderboards</h1>
+    <h1>Search</h1>
 
     <div>
         <form method="GET" action="{{ url_for('search') }}">
-            Vehicle
-            <select name="vehicle">
-                <option value="" disabled hidden selected></option>
-                {% for i in vehicles_options %}
-                    <option value="{{i}}">{{i}}</option>
-                {% endfor %}
-            </select><br>
+            <div class="search-grid">
+                <div class="search-box">
+                    <label>Time</label>
+                    <input type="number" step="any" name="time"><br>
+                </div>
 
-            Time
-            <input type="number" step="any" name="time"><br>
-
-            Player
-            <select name="player">
-                <option value="" disabled hidden selected></option>
-                {% for i in players %}
-                    <option value="{{i}}">{{i}}</option>
-                {% endfor %}
-            </select><br>
-
-            Track
-            <select name="track">
-                <option value="" disabled hidden selected></option>
-                {% for i in tracks_list %}
-                    <option value="{{i}}">{{i}}</option>
-                {% endfor %}
-            </select><br>
-
-            <div>Tunes
-                <input type="number" max="20" min="1" name="tune1">
-                <input type="number" max="20" min="1" name="tune2">
-                <input type="number" max="20" min="1" name="tune3">
-                <input type="number" max="20" min="1" name="tune4">
-            </div>
-
-            <div>Parts
-                {% for i in range(3) %}
-                    <select name="slot{{(i + 1)}}">
+                <div class="search-box">
+                    <label>Player</label>
+                    <select name="player">
                         <option value="" disabled hidden selected></option>
-                        {% for x in parts_list %}
-                            <option value="{{x}}">{{x}}</option>
+                        {% for i in players %}
+                            <option value="{{i}}">{{i}}</option>
                         {% endfor %}
                     </select>
-                {% endfor %}
-            </div><br>
+                </div>
+
+                <div class="search-box">
+                    <label>Tracks</label>
+                    <select name="track">
+                        <option value="" disabled hidden selected></option>
+                        {% for i in tracks_list %}
+                            <option value="{{i}}">{{i}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="search-box">
+                    <label>Tunes</label>
+                    <div class="multi-select">
+                        <input type="number" max="20" min="1" name="tune1">
+                        <input type="number" max="20" min="1" name="tune2">
+                        <input type="number" max="20" min="1" name="tune3">
+                        <input type="number" max="20" min="1" name="tune4">
+                    </div>
+                </div>
+
+                <div class="search-box">
+                    <label>Vehicles</label>
+                    <select name="vehicle">
+                        <option value="" disabled hidden selected></option>
+                        {% for i in vehicles_options %}
+                            <option value="{{i}}">{{i}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="search-box">
+                    <label>Parts</label>
+                    <div class="multi-select">
+                        {% for i in range(3) %}
+                            <select name="slot{{(i + 1)}}">
+                                <option value="" disabled hidden selected></option>
+                                {% for x in parts_list %}
+                                    <option value="{{x}}">{{x}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
             {% if result_errors%}
                 <div>
@@ -58,8 +74,10 @@
                 </div>
             {% endif %}
 
-            <input type="search" name="search_bar" value="{{search_bar}}">
-            <button type="submit">enter</button>
+            <div class="search-bar">
+                <input type="search" name="search_bar" value="{{search_bar}}">
+                <button type="submit">enter</button>
+            </div>
         </form>
     </div>
 

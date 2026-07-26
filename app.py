@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table
-from sqlalchemy.orm import Mapped
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/database.db"
@@ -284,10 +282,13 @@ def delete():
 
             #delete the setup if it exists
             if setup:
-                setup_id = Setups.query.get(int(setup))
-                db.session.delete(setup_id)
+                old_player = WR_Times.query.filter(not Setups.wr_time.any().all())
+                for i in old_player:
+                    print("Child data to be deleted: "+i.player)
+                db.session.add(old_player)
+                #db.session.delete(setup_id)
                 print("Deleted "+ setup)
-                db.session.commit()
+                #db.session.commit()
     setups = Setups.query.all()
     return render_template('delete.html',setups=setups)
 

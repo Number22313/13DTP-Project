@@ -1,4 +1,9 @@
-html
+*
+{
+    box-sizing: border-box;
+}
+
+:root
 {
     --background-color: black;
     --text-color: white;
@@ -6,68 +11,78 @@ html
     color: var(--text-color);
 }
 
-td
+a
 {
-    padding: 2vh;
-    border: 1px solid var(--text-color);
-    text-align: center;
+    text-decoration: none;
     color: var(--text-color);
-    background-color: var(--background-color);
+    padding: 5px;
+    padding-bottom: 5vh;
 }
 
-nav
+input,select,button
 {
-    display: flex;
-    align-items: center;
+    border: 1px black;
+    border-radius: 6px;
 }
 
 .links
 {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-around;
     gap: 5vh;
-}
-
-a
-{
-    text-decoration: none;
-    color: var(--text-color);
-    padding-left: 3vh;
-    padding-right: 3vh;
-    padding: 1vh;
+    align-items: center;
 }
 
 a:hover
 {
-    background-color: blue;
-    border-radius: 1vh;
+    color: blue;
+    text-decoration: underline 1px blue;
+    text-underline-offset: 2vh;
 }
 
-.form
+.search-grid
 {
-    min-height: 25vh;
-    background-color: rgb(59, 59, 59);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 2vh;
+    align-items: start;
+    background-color: rgba(0, 0, 255, 0.174);
+}
+
+.search-box
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.search-box > input, select
+{
+    width: 100%;
+    height: 25px;
+    background-color: rgba(0, 0, 255, 0.205);
+    border-color: rgba(0, 0, 255, 0.215);
+}
+
+.multi-select
+{
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
+    width: 100%;
+}
+
+.multi-select input,select
+{
+    height: 25px;
+    background-color: rgba(0, 0, 255, 0.205);
+    border-color: rgba(0, 0, 255, 0.215);
+}
+
+.search-bar input,button
+{
+    background-color: rgba(0, 0, 255, 0.205);
+    border-color: rgba(0, 0, 255, 0.215);
     color: var(--text-color);
-    display: flex;
-    justify-content: center;
-}
-
-button
-{
-    min-width: 15vh;
-    min-height: 3vh;
-    border-color: rgb(44, 44, 44);
-    border-radius: none;
-}
-
-button[type="submit"]
-{
-    display: flex;
-    justify-content: center;
-}
-
-.search
-{
-    max-height: max-content;
 }
