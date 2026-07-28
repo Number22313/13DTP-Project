@@ -1,20 +1,26 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
-    <h1>Times</h1><br>
-    <table class="table">
-        <tr>
-            <td>ID</td>
-            <td>Time</td>
-            <td>Player</td>
-        </tr>
-        {% for time in times %}
-        <tr>
-            <td>{{time.time_id}}</td>
-            <td>{{time.time}}</td>
-            <td>{{time.player}}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="results"><h1>Times</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>Time</td>
+                    <td>Player</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for time in times %}
+                <tr>
+                    <td>{{time.time_id}}</td>
+                    <td>{{time.time}}</td>
+                    <td>{{time.player}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 {% endblock %}
