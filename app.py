@@ -82,22 +82,24 @@ class Setups(db.Model):
     tune_id = db.Column(db.Integer, db.ForeignKey("Tunes.tune_id"), nullable=False)
     vehicle_id = db.Column(db.Integer, db.ForeignKey("Vehicles.vehicle_id"), nullable=False)
     part_id = db.Column(db.Integer, db.ForeignKey("Part Combinations.part_id"), nullable=False)
-    wr_time = db.relationship("WR_Times")
-    track = db.relationship("Tracks")
-    tune = db.relationship("Tunes")
-    vehicle = db.relationship("Vehicles")
-    parts_combinations = db.relationship("Parts")
+    wr_time = db.relationship("WR_Times", back_populates="setups")
+    track = db.relationship("Tracks", back_populates="setups")
+    tune = db.relationship("Tunes", back_populates="setups")
+    vehicle = db.relationship("Vehicles", back_populates="setups")
+    parts_combinations = db.relationship("Parts", back_populates="setups")
 
 class WR_Times(db.Model):
     __tablename__ = "WR_Times"
     time_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     time = db.Column(db.REAL, nullable=False)
     player = db.Column(db.Text, nullable=False)
+    setups = db.relationship("Setups", back_populates="wr_time")
 
 class Tracks(db.Model):
     __tablename__ = "Tracks"
     track_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     track_name = db.Column(db.Text, nullable=False)
+    setups = db.relationship("Setups", back_populates="track")
 
 class Tunes(db.Model):
     __tablename__ = "Tunes"
@@ -106,11 +108,13 @@ class Tunes(db.Model):
     tune2 = db.Column(db.Integer, nullable=False)
     tune3 = db.Column(db.Integer, nullable=False)
     tune4 = db.Column(db.Integer, nullable=False)
+    setups = db.relationship("Setups", back_populates="tune")
 
 class Vehicles(db.Model):
     __tablename__ = "Vehicles"
     vehicle_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     vehicle_name = db.Column(db.Text, unique=True)
+    setups = db.relationship("Setups", back_populates="vehicle")
 
 class Parts(db.Model):
     __tablename__ = "Part Combinations"
@@ -118,6 +122,7 @@ class Parts(db.Model):
     slot1 = db.Column(db.Text, nullable=False)
     slot2 = db.Column(db.Text, nullable=False)
     slot3 = db.Column(db.Text, nullable=False)
+    setups = db.relationship("Setups", back_populates="parts_combinations")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -276,31 +281,33 @@ def delete():
     if request.method == "POST":
         delete_submit = request.form.get("delete submit")
         if delete_submit == "delete":
-            setup = request.form.get("setup")
-            print("Found Setup "+ setup)
-
-            #delete the setup if it exists
-            if setup:
-                old_player = WR_Times.query.filter(Setups.wr_time.has(WR_Times.player == WR_Times.player)).all()
-                for i in old_player:
-                    print(f"Child data to be deleted: {i}")
-                #db.session.add(old_player)
-                #db.session.delete(setup_id)
-                print("Deleted "+ setup)
-                #db.session.commit()
-    setups = Setups.query.all()
-    return render_template('delete.html',setups=setups)
+            form = request.form.get("setup")
+            print(f"Found Setup {form}")
+            if form:
+                setup = Setups.query.get(form)
+                #delete the setup if it exists
+                if setup:
+                    db.session.delete(setup)
+                    db.session.flush()
+                    old_player = WR_Times.query.filter(~WR_Times.setups.any()).all()
+                    for i in old_player:
+                        print(f"Deleted unused player: {i.player}")
+                        db.session.delete(i)
+                    print(f"Deleted {setup}")
+                    db.session.commit()
+    all_setups = Setups.query.all()
+    return render_template('delete.html',setups=all_setups)
 
 @app.route('/Setups', methods=['GET', 'POST'])
 def setups():
-    setups = Setups.query.all()
+    all_setups = Setups.query.all()
     times = WR_Times.query.all()
     tracks = Tracks.query.all()
     tunes = Tunes.query.all()
     vehicles = Vehicles.query.all()
     parts = Parts.query.all()
     return render_template('Setups.html',
-                           setups=setups,
+                           setups=all_setups,
                            times=times,
                            tracks=tracks,
                            tunes=tunes,
@@ -389,7 +396,7 @@ def search():
 
     if player:
         if player in players_options:
-            setup = setup.filter(Setups.wr_time.player == player)
+            setup = setup.filter(WR_Times.player == player)
         else:
             result_errors.append(f"{player} has no setups")
 
