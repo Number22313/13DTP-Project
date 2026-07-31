@@ -13,12 +13,14 @@
 
                 <div class="search-box">
                     <label>Player</label>
-                    <select name="player">
-                        <option value="" disabled hidden selected></option>
-                        {% for i in players %}
-                            <option value="{{i}}">{{i}}</option>
-                        {% endfor %}
-                    </select>
+                    <details name="player">
+                        <summary></summary> 
+                        <div class="player_filter">
+                            {% for i in players %}
+                                <div><p>{{i}}</p><input type="checkbox" value="{{i}}" name="player_filter"></div>
+                            {% endfor %}
+                        </div>
+                    </details>
                 </div>
 
                 <div class="search-box">
@@ -45,7 +47,7 @@
                     <label>Vehicles</label>
                     <select name="vehicle">
                         <option value="" disabled hidden selected></option>
-                        {% for i in vehicles_options %}
+                        {% for i in vehicles_list %}
                             <option value="{{i}}">{{i}}</option>
                         {% endfor %}
                     </select>
@@ -64,7 +66,6 @@
                         {% endfor %}
                     </div>
                 </div>
-            </div>
 
             <div class="search-bar">
                 <input type="search" name="search_bar" value="{{search_bar}}">
@@ -102,6 +103,7 @@
                     <td>{{i.tune.tune1}}, {{i.tune.tune2}}, {{i.tune.tune3}}, {{i.tune.tune4}}</td>
                     <td>{{i.vehicle.vehicle_name}}</td>
                     <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
+                    {% if i.wr_time.time == test %} <td class="wr">{{i.wr_time.time}}</td> {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

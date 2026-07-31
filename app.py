@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/database.db"
@@ -360,13 +361,6 @@ def search():
             (tune2, Tunes.tune2),
             (tune3, Tunes.tune3),
             (tune4, Tunes.tune4)]
-    vehicles_options = []
-    for a in (db.session.query(Vehicles.vehicle_name).join(Setups).distinct().all()):
-        vehicles_options.append(a[0])
-    
-    tracks_options = []
-    for b in (db.session.query(Tracks.track_name).join(Setups).distinct().all()):
-        tracks_options.append(b[0])
     
     players_options = []
     for c in (db.session.query(WR_Times.player).join(Setups).distinct().all()):
@@ -440,8 +434,13 @@ def search():
                                 (Parts.slot3 == slot3))
         else:
             result_errors.append(f"{slot3} is not a valid part")
-    
-        
+
+    test1 = (db.session.query(func.min(WR_Times.time))
+            .join(Setups, WR_Times.time_id == Setups.time_id)
+            .filter(Setups.track_id == Setups.track_id,Setups.vehicle_id == Setups.vehicle_id).first())
+    print(f"{test1}")
+    test = 8.152
+    test = float(test)
 
 
     if search_bar:
@@ -483,15 +482,23 @@ def search():
     else:
         result = setup.all()
 
+    # for i in result:
+    #     a = i.wr_time.time == test
+    #     if a:
+    #         print("matching")
+    #     else:
+    #         print(type(a),a,type(i.wr_time.time),(i.wr_time.time),type(test),test)
+
     return render_template('Search.html',
-                           vehicles_options=vehicles_options,
                            tracks_list=tracks_list,
+                           vehicles_list=vehicles_list,
                            parts_list=parts_list,
                            search_bar=search_bar or "",
                            result=result,
                            players=players_options,
                            result_errors=result_errors,
-                           track=track)
+                           track=track,
+                           test=test)
 
 
 if __name__ == '__main__':
