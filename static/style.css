@@ -181,7 +181,6 @@ tr
 
 .results table tbody tr
 {
-    background-color: transparent;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     transition: background-color 0.15s ease;
 }
@@ -190,6 +189,7 @@ tr
 {
     color: rgb(255, 255, 255);
     padding: 10px 10px;
+    background: transparent;
 }
 
 .results table tbody tr:hover

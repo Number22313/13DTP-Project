@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
+from sqlalchemy.orm import aliased
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/database.db"
@@ -435,12 +436,17 @@ def search():
         else:
             result_errors.append(f"{slot3} is not a valid part")
 
-    test1 = (db.session.query(func.min(WR_Times.time))
-            .join(Setups, WR_Times.time_id == Setups.time_id)
-            .filter(Setups.track_id == Setups.track_id,Setups.vehicle_id == Setups.vehicle_id).first())
-    print(f"{test1}")
-    test = 8.152
-    test = float(test)
+    Setup_subquery = aliased(Setups)
+
+    wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
+                                                               .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
+                                                               .filter(Setup_subquery.track_id == Setups.track_id,
+                                                                       Setup_subquery.vehicle_id == Setups.vehicle_id)
+                                                                .scalar_subquery())).all())
+    wr_setups = []
+    for i in wr:
+        wr_setups.append(int(i.setup_id))
+    print(f"{wr_setups}")
 
 
     if search_bar:
@@ -498,7 +504,7 @@ def search():
                            players=players_options,
                            result_errors=result_errors,
                            track=track,
-                           test=test)
+                           wr_setups=wr_setups)
 
 
 if __name__ == '__main__':

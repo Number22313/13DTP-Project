@@ -96,14 +96,13 @@
             </thead>
             <tbody>
                 {% for i in result %}
-                <tr>
+                <tr class="{% if i.setup_id in wr_setups %}wr{% endif %}">
                     <td>{{i.setup_id}}</td>
                     <td>{{i.wr_time.time}} / {{i.wr_time.player}}</td>
                     <td>{{i.track.track_name}}</td>
                     <td>{{i.tune.tune1}}, {{i.tune.tune2}}, {{i.tune.tune3}}, {{i.tune.tune4}}</td>
                     <td>{{i.vehicle.vehicle_name}}</td>
                     <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
-                    {% if i.wr_time.time == test %} <td class="wr">{{i.wr_time.time}}</td> {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
