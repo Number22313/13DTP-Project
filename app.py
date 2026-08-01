@@ -346,6 +346,7 @@ def parts():
 def search():
     setup = []
     result_errors = []
+    wr_setups = []
 
     vehicle = request.args.get("vehicle") or None
     time = request.args.get("time") or None
@@ -362,6 +363,7 @@ def search():
             (tune2, Tunes.tune2),
             (tune3, Tunes.tune3),
             (tune4, Tunes.tune4)]
+    wr_checked = request.args.get("wr_checked")
     
     players_options = []
     for c in (db.session.query(WR_Times.player).join(Setups).distinct().all()):
@@ -436,19 +438,6 @@ def search():
         else:
             result_errors.append(f"{slot3} is not a valid part")
 
-    Setup_subquery = aliased(Setups)
-
-    wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
-                                                               .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
-                                                               .filter(Setup_subquery.track_id == Setups.track_id,
-                                                                       Setup_subquery.vehicle_id == Setups.vehicle_id)
-                                                                .scalar_subquery())).all())
-    wr_setups = []
-    for i in wr:
-        wr_setups.append(int(i.setup_id))
-    print(f"{wr_setups}")
-
-
     if search_bar:
         #Convert the search to an integer and float
         try:
@@ -475,26 +464,41 @@ def search():
                                                                         (Parts.slot2.ilike(search_bar))|
                                                                         (Parts.slot3.ilike(search_bar))))
                                         )
+    #Filter results for wrs
+    if wr_checked:
+        Setup_subquery = aliased(Setups)
 
-    #blank field(s)
-    if not any([search_bar,vehicle,player,time,track,tune1,tune2,tune3,tune4,slot1,slot2,slot3]):
-        result = Setups.query.all()
+        setup = (setup.filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
+                                                                .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
+                                                                .filter(Setup_subquery.track_id == Setups.track_id,
+                                                                        Setup_subquery.vehicle_id == Setups.vehicle_id)
+                                                                .scalar_subquery())))
     
-    #invalid field(s)
-    elif result_errors:
+    #All or nothing
+    if result_errors:
         result = []
-    
-    #valid field(s)
     else:
         result = setup.all()
 
-    # for i in result:
-    #     a = i.wr_time.time == test
-    #     if a:
-    #         print("matching")
-    #     else:
-    #         print(type(a),a,type(i.wr_time.time),(i.wr_time.time),type(test),test)
+        if wr_checked:
+            for i in result:
+                wr_setups.append(int(i.setup_id))
+            print(f"{wr_setups}")
 
+        #Seperate query for marking wrs
+        else:
+            Setup_subquery = aliased(Setups)
+
+            wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
+                                                                    .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
+                                                                    .filter(Setup_subquery.track_id == Setups.track_id,
+                                                                            Setup_subquery.vehicle_id == Setups.vehicle_id)
+                                                                    .scalar_subquery())).all())
+
+            for i in wr:
+                wr_setups.append(int(i.setup_id))
+            print(f"{wr_setups}")
+    
     return render_template('Search.html',
                            tracks_list=tracks_list,
                            vehicles_list=vehicles_list,
@@ -503,8 +507,7 @@ def search():
                            result=result,
                            players=players_options,
                            result_errors=result_errors,
-                           track=track,
-                           wr_setups=wr_setups)
+                           track=track)
 
 
 if __name__ == '__main__':
