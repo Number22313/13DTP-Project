@@ -80,8 +80,12 @@ a:hover
     width: 100%;
 }
 
-.multi-select input,
-.multi-select select
+.multi-select > .expand
+{
+    flex: 1;
+}
+
+.multi-select input
 {
     flex: 1;
     width: 0;
@@ -104,7 +108,8 @@ a:hover
 
 input:focus,
 select:focus,
-button:focus
+button:focus,
+details[open] > summary
 {
     border-color: rgb(0, 163, 255);
     box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
@@ -197,29 +202,84 @@ tr
     background-color: rgba(0, 163, 255, 0.12);
 }
 
-/* input[type="checkbox"]
+.expand
 {
-    display: flex;
-} */
-
-.player_filter
-{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    flex-wrap: wrap;
+    position: relative;
+    width: 100%;
 }
 
-details
+.expand > summary
+{
+    width: 100%;
+    height: 30px;
+    background-color: rgb(8, 23, 46);
+    border: 1px solid rgb(28, 49, 76);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expand_details
 {
     position: absolute;
-    margin-top: 25px;
-    background-color: black;
-    padding-inline: 20px;
-    border-radius: 5px;
+    width: 100%;
+    padding: 5px 5px;
+    background-color: rgb(8, 23, 46);
+    border: 1px solid rgb(28, 49, 76);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
-.wr
+.multi-select > details > .expand_details
 {
-    background-color: gold;
+    width: 180px;
+}
+
+.expand_options
+{
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+    width: 100%;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.expand_options input[type="checkbox"]
+{
+    position: relative;
+    width: 16px;
+    height: 16px;
+    appearance: none;
+    background-color: rgb(8, 23, 46);
+    border: 1px solid rgb(28, 49, 76);
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.expand_options input[type="checkbox"]:checked
+{
+    background-color: rgb(0, 136, 255);
+    border-color: rgb(0, 136, 255);
+    box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
+    background-image: url(check.svg);
+}
+
+.expand_options:hover
+{
+    background-color: rgba(0, 163, 255, 0.12);
+    border-color: rgb(0, 136, 255);
+}
+
+.multi-select details:last-child .expand_details
+{
+    left: auto;
+    right: 0;
 }

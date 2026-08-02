@@ -13,11 +13,14 @@
 
                 <div class="search-box">
                     <label>Player</label>
-                    <details name="player">
+                    <details class="expand" name="expand">
                         <summary></summary> 
-                        <div class="player_filter">
+                        <div class="expand_details">
                             {% for i in players %}
-                                <div><p>{{i}}</p><input type="checkbox" value="{{i}}" name="player_filter"></div>
+                                <label class="expand_options">
+                                    <span>{{i}}</span>
+                                    <input type="checkbox" value="{{i}}" name="player_filter">
+                                </label>
                             {% endfor %}
                         </div>
                     </details>
@@ -25,12 +28,17 @@
 
                 <div class="search-box">
                     <label>Tracks</label>
-                    <select name="track">
-                        <option value="" disabled hidden selected></option>
-                        {% for i in tracks_list %}
-                            <option value="{{i}}">{{i}}</option>
-                        {% endfor %}
-                    </select>
+                    <details class="expand" name="expand">
+                        <summary></summary> 
+                        <div class="expand_details">
+                            {% for i in tracks_list %}
+                                <label class="expand_options">
+                                    <span>{{i}}</span>
+                                    <input type="checkbox" value="{{i}}" name="track_filter">
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </details>
                 </div>
 
                 <div class="search-box">
@@ -45,35 +53,46 @@
 
                 <div class="search-box">
                     <label>Vehicles</label>
-                    <select name="vehicle">
-                        <option value="" disabled hidden selected></option>
-                        {% for i in vehicles_list %}
-                            <option value="{{i}}">{{i}}</option>
-                        {% endfor %}
-                    </select>
+                    <details class="expand" name="expand">
+                        <summary></summary> 
+                        <div class="expand_details">
+                            {% for i in vehicles_list %}
+                                <label class="expand_options">
+                                    <span>{{i}}</span>
+                                    <input type="checkbox" value="{{i}}" name="vehicle_filter">
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </details>
                 </div>
 
                 <div class="search-box">
                     <label>Parts</label>
                     <div class="multi-select">
                         {% for i in range(3) %}
-                            <select name="slot{{(i + 1)}}">
-                                <option value="" disabled hidden selected></option>
+                        <details class="expand" name="expand">
+                            <summary>Slot {{i+1}}</summary>
+                            <div class="expand_details">
                                 {% for x in parts_list %}
-                                    <option value="{{x}}">{{x}}</option>
+                                    <label class="expand_options">
+                                        <span>{{x}}</span>
+                                        <input type="checkbox" value="{{x}}" name="part_filter">
+                                    </label>
                                 {% endfor %}
-                            </select>
+                            </div>
+                        </details>
                         {% endfor %}
                     </div>
                 </div>
 
-                <div>
-                    <label>World Records</label>
+                <label class="expand_options">
+                    <span>World Records</span>
                     <input type="checkbox" name="wr_checked">
-                </div>
+                </label>
+            </div>
 
             <div class="search-bar">
-                <input type="search" name="search_bar" value="{{search_bar}}">
+                <input type="search" name="search_bar" value="{{search_bar}}" placeholder="Eg. Ndwg Bottom Gear">
                 <button type="submit">Enter</button>
             </div>
         </form>
