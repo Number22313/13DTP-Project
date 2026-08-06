@@ -101,7 +101,7 @@
     {% if result_errors%}
         <div>
             {% for i in result_errors %}
-                <p>{{i}},</p>
+                <div>{{i}},</div><br>
             {% endfor %}
         </div>
     {% endif %}
@@ -120,7 +120,7 @@
             </thead>
             <tbody>
                 {% for i in result %}
-                <tr class="{% if i.setup_id in wr_setups %}wr{% endif %}">
+                <tr>
                     <td>{{i.setup_id}}</td>
                     <td>{{i.wr_time.time}} / {{i.wr_time.player}}</td>
                     <td>{{i.track.track_name}}</td>

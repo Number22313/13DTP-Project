@@ -321,37 +321,12 @@ def times():
     times = WR_Times.query.all()
     return render_template('Times.html', times=times)
 
-@app.route('/Tracks')
-def tracks():
-    tracks = Tracks.query.all()
-    return render_template('Tracks.html', tracks=tracks)
-
-@app.route('/Tunes')
-def tunes():
-    tunes = Tunes.query.all()
-    return render_template('Tunes.html', tunes=tunes)
-
-@app.route('/Vehicles')
-def vehicles():
-    vehicles = Vehicles.query.all()
-    return render_template('Vehicles.html', vehicles=vehicles)
-
-@app.route('/Parts')
-def parts():
-    parts = Parts.query.all()
-    return render_template('Parts.html', parts=parts)
-
-
 @app.route('/Search')
 def search():
     setup = []
     result_errors = []
     wr_setups = []
-
-    vehicle = request.args.get("vehicle") or None
     time = request.args.get("time") or None
-    player = request.args.get("player") or None
-    track = request.args.get("track") or None
     tune1 = request.args.get("tune1") or None
     tune2 = request.args.get("tune2") or None
     tune3 = request.args.get("tune3") or None
@@ -364,6 +339,9 @@ def search():
             (tune3, Tunes.tune3),
             (tune4, Tunes.tune4)]
     wr_checked = request.args.get("wr_checked")
+    player_filter = request.args.getlist("player_filter")
+    track_filter = request.args.getlist("track_filter")
+    vehicle_filter = request.args.getlist("vehicle_filter")
     
     players_options = []
     for c in (db.session.query(WR_Times.player).join(Setups).distinct().all()):
@@ -375,11 +353,12 @@ def search():
     setup = Setups.query.join(WR_Times).join(Vehicles).join(Tracks).join(Tunes).join(Parts).order_by(WR_Times.time.asc())
 
     #Filter setups with actual inputs
-    if vehicle:
-        if vehicle in vehicles_list:
-            setup = setup.filter(Vehicles.vehicle_name == vehicle)
-        else:
-            result_errors.append(f"{vehicle} is not a valid vehicle")
+    if vehicle_filter:
+        for v in vehicle_filter:
+            if v in vehicles_list:
+                setup = setup.filter(Vehicles.vehicle_name == v)
+            else:
+                result_errors.append(f"{v} is not a valid vehicle")
     
     if time:
         try:
@@ -390,18 +369,20 @@ def search():
                 result_errors.append(f"time must be greater than 0")
         except ValueError:
             result_errors.append(f"{time} is not a number")
+    
+    if player_filter:
+        for p in player_filter:
+            if p in players_options:
+                setup = setup.filter(WR_Times.player == p)
+            else:
+                result_errors.append(f"{p} has no setups")
 
-    if player:
-        if player in players_options:
-            setup = setup.filter(WR_Times.player == player)
-        else:
-            result_errors.append(f"{player} has no setups")
-
-    if track:
-        if track in tracks_list:
-            setup = setup.filter(Tracks.track_name == track)
-        else:
-            result_errors.append(f"{track} is not a track")
+    if track_filter:
+        for t in track_filter:
+            if t in track_filter:
+                setup = setup.filter(Tracks.track_name == t)
+            else:
+                result_errors.append(f"{t} is not a valid track")
     
     for value,column in tunes:
         if value:
@@ -486,18 +467,25 @@ def search():
             print(f"{wr_setups}")
 
         #Seperate query for marking wrs
-        else:
-            Setup_subquery = aliased(Setups)
+        Setup_subquery = aliased(Setups)
 
-            wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
-                                                                    .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
-                                                                    .filter(Setup_subquery.track_id == Setups.track_id,
-                                                                            Setup_subquery.vehicle_id == Setups.vehicle_id)
-                                                                    .scalar_subquery())).all())
+        wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
+                                                                .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
+                                                                .filter(Setup_subquery.track_id == Setups.track_id,
+                                                                        Setup_subquery.vehicle_id == Setups.vehicle_id)
+                                                                .scalar_subquery())).all())
 
-            for i in wr:
-                wr_setups.append(int(i.setup_id))
-            print(f"{wr_setups}")
+        wr_count = []
+        for i in wr:
+            wr_count.append(i.wr_time.player.lower())
+        print(f"{wr_count}")
+
+        player_wr_count = set()
+        for n in wr_count:
+            player_wr_count.add(f"{n}, {wr_count.count(n)}")
+        player_wr_count = list(player_wr_count)
+        player_wr_count.sort()
+        print(f"{player_wr_count}")
     
     return render_template('Search.html',
                            tracks_list=tracks_list,
@@ -506,8 +494,13 @@ def search():
                            search_bar=search_bar or "",
                            result=result,
                            players=players_options,
-                           result_errors=result_errors,
-                           track=track)
+                           result_errors=result_errors)
+
+@app.route('/Leaderboards')
+def leaderboards():
+    return render_template('Leaderboards.html')
+
+
 
 
 if __name__ == '__main__':
