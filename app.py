@@ -161,8 +161,6 @@ def Home():
 
             #Back end validation
 
-            #Valid fields check
-
             #Empty fields check
             if (not time or not player or not track_name or not tune1 
                 or not tune2 or not tune3 or not tune4 or not vehicle_name 
@@ -185,6 +183,7 @@ def Home():
                         not_valid = True
                 except(ValueError,TypeError):
                     insert_errors.append(f"{time} is not a number")
+                    not_valid = True
 
             for i in tunes_list:
                 try:
@@ -233,6 +232,9 @@ def Home():
                     parts_query = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
                     db.session.add(parts_query)
 
+                player_query = WR_Times.query.filter(WR_Times.player.ilike(player)).first()
+                if player_query:
+                    player = player_query.player
                 
                 db.session.flush()
                 
@@ -253,7 +255,7 @@ def Home():
                         setup_query.wr_time.time = time
 
                 #No duplicate
-                else:
+                elif not setup_query:
                     print("Doesnt exist yet")
                     time_query = WR_Times(time=time,player=player)
                     db.session.add(time_query)
@@ -267,9 +269,9 @@ def Home():
                         part_id = parts_query.part_id
                     )
                     db.session.add(setup)
+                    insert_errors.append("Inserted")
 
                 db.session.commit()
-                insert_errors.append("Inserted")
 
     return render_template('home.html',
                            tracks_list=tracks_list,
@@ -465,27 +467,6 @@ def search():
             for i in result:
                 wr_setups.append(int(i.setup_id))
             print(f"{wr_setups}")
-
-        #Seperate query for marking wrs
-        Setup_subquery = aliased(Setups)
-
-        wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
-                                                                .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
-                                                                .filter(Setup_subquery.track_id == Setups.track_id,
-                                                                        Setup_subquery.vehicle_id == Setups.vehicle_id)
-                                                                .scalar_subquery())).all())
-
-        wr_count = []
-        for i in wr:
-            wr_count.append(i.wr_time.player.lower())
-        print(f"{wr_count}")
-
-        player_wr_count = set()
-        for n in wr_count:
-            player_wr_count.add(f"{n}, {wr_count.count(n)}")
-        player_wr_count = list(player_wr_count)
-        player_wr_count.sort()
-        print(f"{player_wr_count}")
     
     return render_template('Search.html',
                            tracks_list=tracks_list,
@@ -498,7 +479,36 @@ def search():
 
 @app.route('/Leaderboards')
 def leaderboards():
-    return render_template('Leaderboards.html')
+    Setup_subquery = aliased(Setups)
+
+    wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
+                                                            .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
+                                                            .filter(Setup_subquery.track_id == Setups.track_id,
+                                                                    Setup_subquery.vehicle_id == Setups.vehicle_id)
+                                                            .scalar_subquery())).all())
+    wr_count = []
+    for z in wr:
+        wr_count.append(z.wr_time.player)
+
+    wr_count_lower = []
+    for x in wr_count:
+        wr_count_lower.append(x.lower())
+
+    player_wr_count = []
+    unique_players = set()
+
+    for i in wr_count:
+        player = i.lower()
+        if player not in unique_players:
+            wrs = wr_count_lower.count(player)
+            player_wr_count.append((wrs, i))
+            unique_players.add(player)
+
+    player_wr_count.sort(reverse=True)
+    print(f"{player_wr_count}")
+
+    return render_template('Leaderboards.html',
+                           player_wr_count=player_wr_count)
 
 
 

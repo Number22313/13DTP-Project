@@ -1,18 +1,24 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
-    <div>
-        <!-- <table class="results">
-            <tr>
-                <td>Player, WRs</td>
-            </tr>
+    <div class="results"><h1>WRs</h1>
+        <table>
+            <thead>
+                <tr>
+                    <td>Player</td>
+                    <td>WRs</td>
+                </tr>
+            </thead>
 
-            {% for i in players_wr_count %}
-            <tr>
-                <td>{{i}}</td>
-            </tr>
-            {% endfor %}
-        </table> -->
+            <tbody>
+                {% for wrs, player in player_wr_count %}
+                    <tr>
+                        <td>{{player}}</td>
+                        <td>{{wrs}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 {% endblock %}
