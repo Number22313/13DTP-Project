@@ -154,10 +154,12 @@ def Home():
                 tune1,tune2,tune3,tune4 = 0,0,0,0
             tunes_list = [tune1,tune2,tune3,tune4]
             vehicle_name=request.form.get("vehicle_name","")
-            slot1=request.form.get("slot1","")
-            slot2=request.form.get("slot2","")
-            slot3=request.form.get("slot3","")
-            slot_list = [slot1,slot2,slot3]
+            slot_list = sorted([request.form.get("slot1",""),
+                                request.form.get("slot2",""),
+                                request.form.get("slot3","")
+                                ])
+            slot1,slot2,slot3 = slot_list
+            print(f"{slot_list}")
 
             #Back end validation
 
@@ -479,6 +481,9 @@ def search():
 
 @app.route('/Leaderboards')
 def leaderboards():
+    all_setups = Setups.query.all()
+
+    #WR
     Setup_subquery = aliased(Setups)
 
     wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
@@ -505,10 +510,23 @@ def leaderboards():
             unique_players.add(player)
 
     player_wr_count.sort(reverse=True)
-    print(f"{player_wr_count}")
+
+    #most used parts
+    all_parts = []
+    for a in all_setups:
+        all_parts.append(a.part_id)
+
+    parts_count = []
+    unique_parts = set(all_parts)
+    for p in unique_parts:
+        count = all_parts.count(p)
+        parts_row = Parts.query.get(p)
+        parts_count.append((count, p, parts_row))
+    parts_count.sort(reverse=True)
 
     return render_template('Leaderboards.html',
-                           player_wr_count=player_wr_count)
+                           player_wr_count=player_wr_count,
+                           parts_count=parts_count)
 
 
 

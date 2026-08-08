@@ -1,24 +1,66 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
-    <div class="results"><h1>WRs</h1>
-        <table>
-            <thead>
-                <tr>
-                    <td>Player</td>
-                    <td>WRs</td>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for wrs, player in player_wr_count %}
+    <div>
+        <div class="results"><h1>WRs</h1>
+            <table>
+                <thead>
                     <tr>
-                        <td>{{player}}</td>
-                        <td>{{wrs}}</td>
+                        <td>Rank</td>
+                        <td>Player</td>
+                        <td>WRs</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    {% for wrs, player in player_wr_count %}
+                    {% if loop.index <= 20 %}
+                        <tr>
+                            <td>
+                                {% if loop.index == 1 %}&#x1f947
+                                {% elif loop.index == 2 %}&#x1F948
+                                {% elif loop.index == 3 %}&#x1F949
+                                {% endif %}
+                                {{loop.index}}
+                            </td>
+                            <td>{{player}}</td>
+                            <td>{{wrs}}</td>
+                        </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <br>
+
+        <div class="results"><h1>Most Used Parts</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Rank</td>
+                        <td>Times Used</td>
+                        <td>Slot1</td>
+                        <td>Slot2</td>
+                        <td>Slot3</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for count, part_id, i in parts_count %}
+                    {% if loop.index <= 20 %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{count}}</td>
+                            <td>{{i.slot1}}</td>
+                            <td>{{i.slot2}}</td>
+                            <td>{{i.slot3}}</td>
+                        </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 {% endblock %}
