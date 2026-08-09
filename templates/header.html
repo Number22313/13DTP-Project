@@ -1,12 +1,9 @@
-<head class="head">
+<header class="head">
     <nav>
         <div class="links">
-            <a href="{{ url_for('Home') }}">Home</a>
-            <a href="{{ url_for('delete') }}">Delete</a>
-            <a href="{{ url_for('setups') }}">Setups</a>
-            <a href="{{ url_for('times') }}">Times</a>
-            <a href="{{ url_for('leaderboards') }}">Leaderboards</a>
-            <a href="{{ url_for('search') }}">Advanced Search</a>
+            <a href="{{ url_for('Home') }}" class="{{ 'active_page' if active_page == 'Home'}}">Home</a>
+            <a href="{{ url_for('setups') }}" class="{{ 'active_page' if active_page == 'setups'}}">Setups</a>
+            <a href="{{ url_for('leaderboards') }}" class="{{ 'active_page' if active_page == 'leaderboards'}}">Leaderboards</a>
         </div>
     </nav>
-</head>
+</header>

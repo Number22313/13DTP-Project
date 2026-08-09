@@ -15,6 +15,12 @@ body
 {
     padding-left: 5vh;
     padding-right: 5vh;
+    font-family: 'Inter', sans-serif;
+}
+
+h1 .title
+{
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 a
@@ -28,7 +34,8 @@ a
 input,select,button
 {
     border: 1px solid black;
-    border-radius: 6px;
+    border-radius: 8px;
+    height: 30px;
 }
 
 .links
@@ -39,11 +46,18 @@ input,select,button
     align-items: center;
 }
 
+a.active_page
+{
+    color: rgb(0, 163, 255);
+    text-decoration: underline 1px rgb(0, 163, 255);
+    text-underline-offset: 12px;
+}
+
 a:hover
 {
     color: rgb(0, 163, 255);
     text-decoration: underline 1px rgb(0, 163, 255);
-    text-underline-offset: 2vh;
+    text-underline-offset: 12px;
 }
 
 .search-grid
@@ -131,7 +145,6 @@ details[open] > summary
 
 .search-bar button
 {
-    height: 30px;
     background-color: rgb(8, 23, 46);
     border: 1px solid rgb(28, 49, 76);
     color: var(--text-color);
@@ -151,7 +164,7 @@ details[open] > summary
     padding: 16px;
     border-radius: 8px;
     background-color: rgb(11, 28, 54);
-    border: 1px solid rgb(28, 49, 76)
+    border: 1px solid rgb(28, 49, 76);
 }
 
 tr
@@ -163,6 +176,9 @@ tr
 {
     width: 100%;
     margin-top: 12px;
+    background-color: rgb(11, 28, 54);
+    border: 1px solid rgb(28, 49, 76);
+    border-radius: 8px;
 }
 
 .results table
@@ -179,7 +195,7 @@ tr
 
 .results table thead td
 {
-    background-color: transparent;
+    background-color: rgb(8, 23, 46);
     color: rgb(100, 139, 189);
     padding: 10px 10px;
 }
@@ -282,4 +298,62 @@ tr
 {
     left: auto;
     right: 0;
+}
+
+.world_records
+{
+    background-color: rgb(8, 23, 46);
+    border: 1px solid rgb(28, 49, 76);
+    border-radius: 6px;
+    height: 30px;
+}
+
+.world_records > input[type="checkbox"]
+{
+    background-color: rgb(11, 28, 54);
+}
+
+.title
+{
+    display: flex;
+    justify-content: center;
+    font-weight: 800;
+    color: rgb(255, 184, 0);
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+}
+
+.table_title
+{
+    padding-left: 20px;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+}
+
+label
+{
+    margin-bottom: 6px;
+}
+
+.norecords
+{
+    text-align: center;
+    padding: 40px;
+}
+
+.clear_filters
+{
+    color: white;
+    border: none;
+    background-color: rgb(8, 23, 46);
+    border: transparent;
+    border-radius: 6px;
+    border: 1px solid rgb(28, 49, 76);
+    height: 30px;
+}
+
+.clear_filters:hover
+{
+    background-color: rgba(0, 163, 255, 0.12);
+    border-color: rgb(0, 136, 255);
 }

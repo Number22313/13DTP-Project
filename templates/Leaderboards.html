@@ -1,8 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
+    <h1 class="title">LEADERBOARDS</h1>
     <div>
-        <div class="results"><h1>WRs</h1>
+        <h2 class="table_title">TOP PLAYERS (WRS)</h2>
+        <div class="results">
             <table>
                 <thead>
                     <tr>
@@ -34,15 +36,16 @@
 
         <br>
 
-        <div class="results"><h1>Most Used Parts</h1>
+        <h2 class="table_title">MOST USED PARTS</h2>
+        <div class="results">
             <table>
                 <thead>
                     <tr>
                         <td>Rank</td>
-                        <td>Times Used</td>
                         <td>Slot1</td>
                         <td>Slot2</td>
                         <td>Slot3</td>
+                        <td>Times Used</td>
                     </tr>
                 </thead>
 
@@ -51,10 +54,10 @@
                     {% if loop.index <= 20 %}
                         <tr>
                             <td>{{loop.index}}</td>
-                            <td>{{count}}</td>
                             <td>{{i.slot1}}</td>
                             <td>{{i.slot2}}</td>
                             <td>{{i.slot3}}</td>
+                            <td>{{count}}</td>
                         </tr>
                     {% endif %}
                     {% endfor %}

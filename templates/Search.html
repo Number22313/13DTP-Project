@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
-    <h1>Search</h1>
+    <h1 class="title">RECORDS</h1>
 
     <div class="search-form">
         <form method="GET" action="{{ url_for('search') }}">
@@ -84,12 +84,16 @@
                         {% endfor %}
                     </div>
                 </div>
-
-                <label class="expand_options">
+                
+                <label class="expand_options world_records">
                     <span>World Records</span>
                     <input type="checkbox" name="wr_checked">
                 </label>
+                
+                <button type="submit" class="clear_filters">Clear Filters</button>
             </div>
+
+            <br>
 
             <div class="search-bar">
                 <input type="search" name="search_bar" value="{{search_bar}}" placeholder="Eg. Ndwg Bottom Gear">
@@ -106,31 +110,41 @@
         </div>
     {% endif %}
 
+    <br>
+
     <div class="results">
-        <table>
-            <thead>
-                <tr>
-                    <td>Setup ID</td>
-                    <td>Time/Player</td>
-                    <td>Track</td>
-                    <td>Tunes</td>
-                    <td>Vehicle</td>
-                    <td>Parts</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for i in result %}
-                <tr>
-                    <td>{{i.setup_id}}</td>
-                    <td>{{i.wr_time.time}} / {{i.wr_time.player}}</td>
-                    <td>{{i.track.track_name}}</td>
-                    <td>{{i.tune.tune1}}, {{i.tune.tune2}}, {{i.tune.tune3}}, {{i.tune.tune4}}</td>
-                    <td>{{i.vehicle.vehicle_name}}</td>
-                    <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% if result %}
+            <table>
+                <thead>
+                    <tr>
+                        <td>Setup ID</td>
+                        <td>Time</td>
+                        <td>Player</td>
+                        <td>Track</td>
+                        <td>Tunes</td>
+                        <td>Vehicle</td>
+                        <td>Parts</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in result %}
+                    <tr>
+                        <td>{{i.setup_id}}</td>
+                        <td>{{i.wr_time.time}}</td>
+                        <td>{{i.wr_time.player}}</td>
+                        <td>{{i.track.track_name}}</td>
+                        <td>{{i.tune.tune1}}/{{i.tune.tune2}}/{{i.tune.tune3}}/{{i.tune.tune4}}</td>
+                        <td>{{i.vehicle.vehicle_name}}</td>
+                        <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="norecords">
+                <p>No records found that match the filters</p>
+            </div>
+        {% endif %}
     </div>
 </body>
 {% endblock %}

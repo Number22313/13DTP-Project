@@ -129,6 +129,34 @@ class Parts(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def Home():
+    return render_template('home.html',
+                           active_page='Home')
+
+
+@app.route('/Delete', methods=['GET', 'POST'])
+def delete():
+    if request.method == "POST":
+        delete_submit = request.form.get("delete submit")
+        if delete_submit == "delete":
+            form = request.form.get("setup")
+            print(f"Found Setup {form}")
+            if form:
+                setup = Setups.query.get(form)
+                #delete the setup if it exists
+                if setup:
+                    db.session.delete(setup)
+                    db.session.flush()
+                    old_player = WR_Times.query.filter(~WR_Times.setups.any()).all()
+                    for i in old_player:
+                        print(f"Deleted unused player: {i.player}")
+                        db.session.delete(i)
+                    print(f"Deleted {setup}")
+                    db.session.commit()
+    all_setups = Setups.query.all()
+    return render_template('delete.html',setups=all_setups, active_page='delete')
+
+@app.route('/Setups', methods=['GET', 'POST'])
+def setups():
     insert_errors = []
     if request.method == 'POST':
         insert_submit = request.form.get("insert submit")
@@ -274,56 +302,20 @@ def Home():
                     insert_errors.append("Inserted")
 
                 db.session.commit()
-
-    return render_template('home.html',
+    all_setups = Setups.query.all()
+    return render_template('Setups.html',
+                           active_page='setups',
+                           setups=all_setups,
                            tracks_list=tracks_list,
                            vehicles_list=vehicles_list,
                            parts_list=parts_list,
-                           insert_errors=insert_errors
-                           )
+                           insert_errors=insert_errors)
 
-@app.route('/Delete', methods=['GET', 'POST'])
-def delete():
-    if request.method == "POST":
-        delete_submit = request.form.get("delete submit")
-        if delete_submit == "delete":
-            form = request.form.get("setup")
-            print(f"Found Setup {form}")
-            if form:
-                setup = Setups.query.get(form)
-                #delete the setup if it exists
-                if setup:
-                    db.session.delete(setup)
-                    db.session.flush()
-                    old_player = WR_Times.query.filter(~WR_Times.setups.any()).all()
-                    for i in old_player:
-                        print(f"Deleted unused player: {i.player}")
-                        db.session.delete(i)
-                    print(f"Deleted {setup}")
-                    db.session.commit()
-    all_setups = Setups.query.all()
-    return render_template('delete.html',setups=all_setups)
-
-@app.route('/Setups', methods=['GET', 'POST'])
-def setups():
-    all_setups = Setups.query.all()
-    times = WR_Times.query.all()
-    tracks = Tracks.query.all()
-    tunes = Tunes.query.all()
-    vehicles = Vehicles.query.all()
-    parts = Parts.query.all()
-    return render_template('Setups.html',
-                           setups=all_setups,
-                           times=times,
-                           tracks=tracks,
-                           tunes=tunes,
-                           vehicles=vehicles,
-                           parts=parts)
 
 @app.route('/Times')
 def times():
     times = WR_Times.query.all()
-    return render_template('Times.html', times=times)
+    return render_template('Times.html', times=times, active_page='times')
 
 @app.route('/Search')
 def search():
@@ -471,6 +463,7 @@ def search():
             print(f"{wr_setups}")
     
     return render_template('Search.html',
+                           active_page='search',
                            tracks_list=tracks_list,
                            vehicles_list=vehicles_list,
                            parts_list=parts_list,
@@ -478,6 +471,7 @@ def search():
                            result=result,
                            players=players_options,
                            result_errors=result_errors)
+
 
 @app.route('/Leaderboards')
 def leaderboards():
@@ -525,6 +519,7 @@ def leaderboards():
     parts_count.sort(reverse=True)
 
     return render_template('Leaderboards.html',
+                           active_page='leaderboards',
                            player_wr_count=player_wr_count,
                            parts_count=parts_count)
 
