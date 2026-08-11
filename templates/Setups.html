@@ -1,74 +1,77 @@
 {% extends 'layout.html' %}
 {% block content %}
 <body>
-    <div class="form">Insert
+    <div class="insert-form">
         <form method="POST" action="{{url_for('Home')}}">
-            <div>
-                <table>
-                    <tr>
-                        <td>Vehicle</td>
-                        <td>Time</td>
-                        <td>Player</td>
-                        <td>Track</td>
-                        <td>Tunes(1/1/1/1)</td>
-                        <td>Parts(slot1,slot2,slot3)</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <select name="vehicle_name">
-                                <option value="" disabled hidden selected></option>
-                                {% for i in vehicles_list %}
-                                    <option value="{{i}}">{{i}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" step="any" name="time">
-                        </td>
-                        <td>
-                            <input type="text" name="player">
-                        </td>
-                        <td>
-                            <select name="track_name">
-                                <option value="" disabled selected hidden></option>
-                                {% for i in tracks_list %}
-                                    <option value="{{i}}">{{i}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" max="20" min="1" name="tune1">
-                            <input type="number" max="20" min="1" name="tune2">
-                            <input type="number" max="20" min="1" name="tune3">
-                            <input type="number" max="20" min="1" name="tune4">
-                        </td>
-                        <td>
-                            <select name="slot1">
-                                <option value="" selected disabled hidden></option>
-                                {% for i in parts_list %}
-                                    <option value="{{i}}">{{i}}</option>
-                                {% endfor %}
-                            </select>
+            <div class="search-grid">
+                <div class="search-box">
+                    <label>Vehicle</label>
+                    <select name="vehicle_name">
+                        <option value="" disabled hidden selected></option>
+                        {% for i in vehicles_list %}
+                            <option value="{{i}}">{{i}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                            <select name="slot2">
-                                <option value="" selected disabled hidden></option>
-                                {% for i in parts_list %}
-                                    <option value="{{i}}">{{i}}</option>
-                                {% endfor %}
-                            </select>
+                <div class="search-box">
+                    <label>Time</label>
+                    <input type="number" step="any" name="time">
+                </div>
 
-                            <select name="slot3">
-                                <option value="" selected disabled hidden></option>
-                                {% for i in parts_list %}
-                                    <option value="{{i}}">{{i}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                </table>
+                <div class="search-box">
+                    <label>Player</label>
+                    <input type="text" name="player">
+                </div>
+
+                <div class="search-box">
+                    <label>Tunes</label>
+                    <div class="multi-select">
+                        <input type="number" max="20" min="1" name="tune1">
+                        <input type="number" max="20" min="1" name="tune2">
+                        <input type="number" max="20" min="1" name="tune3">
+                        <input type="number" max="20" min="1" name="tune4">
+                    </div>
+                </div>
+
+                <div class="search-box">
+                    <label>Tracks</label>
+                    <select name="track_name">
+                        <option value="" disabled selected hidden></option>
+                        {% for i in tracks_list %}
+                            <option value="{{i}}">{{i}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="search-box">
+                    <label>Parts</label>
+                    <div class="multi-select left">
+                        <select name="slot1">
+                            <option value="" selected disabled hidden></option>
+                            {% for i in parts_list %}
+                                <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <select name="slot2">
+                            <option value="" selected disabled hidden></option>
+                            {% for i in parts_list %}
+                                <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <select name="slot3">
+                            <option value="" selected disabled hidden></option>
+                            {% for i in parts_list %}
+                                <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
             <br>
-            <div>
+            <div class="search-bar">
                 <button type="submit" name="insert submit" value="insert">Insert</button>
             </div>
         </form>

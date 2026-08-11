@@ -13,8 +13,8 @@
 
 body
 {
-    padding-left: 5vh;
-    padding-right: 5vh;
+    padding-left: 40px;
+    padding-right: 40px;
     font-family: 'Inter', sans-serif;
 }
 
@@ -108,7 +108,15 @@ a:hover
     background-color: rgb(8, 23, 46);
     border-color: rgb(28, 49, 76);
     color: white;
-    text-align: center;
+}
+
+.multi-select > select
+{
+    flex: 1;
+    height: 30px;
+    background-color: rgb(8, 23, 46);
+    border-color: rgb(28, 49, 76);
+    color: white;
 }
 
 .search-bar input,

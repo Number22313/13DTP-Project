@@ -334,10 +334,10 @@ def search():
             (tune2, Tunes.tune2),
             (tune3, Tunes.tune3),
             (tune4, Tunes.tune4)]
-    wr_checked = request.args.get("wr_checked")
-    player_filter = request.args.getlist("player_filter")
-    track_filter = request.args.getlist("track_filter")
-    vehicle_filter = request.args.getlist("vehicle_filter")
+    wr_checked = request.args.get("wr_checked") or None
+    player_filter = request.args.getlist("player_filter") or None
+    track_filter = request.args.getlist("track_filter") or None
+    vehicle_filter = request.args.getlist("vehicle_filter") or None
     
     players_options = []
     for c in (db.session.query(WR_Times.player).join(Setups).distinct().all()):
@@ -350,11 +350,12 @@ def search():
 
     #Filter setups with actual inputs
     if vehicle_filter:
-        for v in vehicle_filter:
-            if v in vehicles_list:
-                setup = setup.filter(Vehicles.vehicle_name == v)
-            else:
-                result_errors.append(f"{v} is not a valid vehicle")
+        vehicle = [v for v in vehicle_filter if v in vehicles_list]
+        setup = setup.filter(Vehicles.vehicle_name.in_(vehicle))
+
+        vehicle_invalid = [v for v in vehicle_filter if v not in vehicles_list]
+        for v in vehicle_invalid:
+            result_errors.append(f"{v} is not a valid vehicle")
     
     if time:
         try:
@@ -367,18 +368,21 @@ def search():
             result_errors.append(f"{time} is not a number")
     
     if player_filter:
-        for p in player_filter:
-            if p in players_options:
-                setup = setup.filter(WR_Times.player == p)
-            else:
-                result_errors.append(f"{p} has no setups")
+        player = [p for p in player_filter if p in players_options]
+        setup = setup.filter(WR_Times.player.in_(player))
+
+        player_invalid = [p for p in player_filter if p not in players_options]
+        for p in player_invalid:
+            result_errors.append(f"{p} player has no setups")
 
     if track_filter:
-        for t in track_filter:
-            if t in track_filter:
-                setup = setup.filter(Tracks.track_name == t)
-            else:
-                result_errors.append(f"{t} is not a valid track")
+
+        track = [t for t in track_filter if t in tracks_list]
+        setup = setup.filter(Tracks.track_name.in_(track))
+
+        track_invalid = [t for t in track_filter if t not in tracks_list]
+        for t in track_invalid:
+            result_errors.append(f"{t} is not a valid track")
     
     for value,column in tunes:
         if value:
@@ -429,18 +433,18 @@ def search():
 
         #Search and filter data
         print("Searching for: "+search_bar)
-        setup = setup.filter((Setups.track.has(Tracks.track_name.ilike(search_bar)))|
-                                        (Setups.wr_time.has((WR_Times.time == real)|
-                                                            (WR_Times.player.ilike(search_bar))))|
-                                        (Setups.tune.has((Tunes.tune1 == integer)|
-                                                            (Tunes.tune2 == integer)|
-                                                            (Tunes.tune3 == integer)|
-                                                            (Tunes.tune4 == integer)))|
-                                        (Setups.vehicle.has(Vehicles.vehicle_name.ilike(search_bar)))|
-                                        (Setups.parts_combinations.has((Parts.slot1.ilike(search_bar))|
-                                                                        (Parts.slot2.ilike(search_bar))|
-                                                                        (Parts.slot3.ilike(search_bar))))
-                                        )
+        setup = setup.filter((Tracks.track_name.ilike(search_bar))|
+                             (WR_Times.time == real)|
+                             (WR_Times.player.ilike(search_bar))|
+                             (Tunes.tune1 == integer)|
+                             (Tunes.tune2 == integer)|
+                             (Tunes.tune3 == integer)|
+                             (Tunes.tune4 == integer)|
+                             (Vehicles.vehicle_name.ilike(search_bar))|
+                             (Parts.slot1.ilike(search_bar))|
+                             (Parts.slot2.ilike(search_bar))|
+                             (Parts.slot3.ilike(search_bar)))
+
     #Filter results for wrs
     if wr_checked:
         Setup_subquery = aliased(Setups)
