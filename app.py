@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import aliased
 
 app = Flask(__name__)
@@ -359,7 +359,7 @@ def search():
     
     if time:
         try:
-            time = int(time)
+            time = float(time)
             if time > 0:
                 setup = setup.filter(WR_Times.time == time)
             else:
@@ -419,31 +419,67 @@ def search():
         else:
             result_errors.append(f"{slot3} is not a valid part")
 
+    master_list_lower = {}
+    for z in (tracks_list+vehicles_list+parts_list+players_options):
+        master_list_lower[z.lower()] = z
+
     if search_bar:
-        #Convert the search to an integer and float
-        try:
-            real = float(search_bar)
-        except ValueError:
-            real = None
-
-        try:
-            integer = int(search_bar)
-        except ValueError:
-            integer = None
-
         #Search and filter data
-        print("Searching for: "+search_bar)
-        setup = setup.filter((Tracks.track_name.ilike(search_bar))|
-                             (WR_Times.time == real)|
-                             (WR_Times.player.ilike(search_bar))|
-                             (Tunes.tune1 == integer)|
-                             (Tunes.tune2 == integer)|
-                             (Tunes.tune3 == integer)|
-                             (Tunes.tune4 == integer)|
-                             (Vehicles.vehicle_name.ilike(search_bar))|
-                             (Parts.slot1.ilike(search_bar))|
-                             (Parts.slot2.ilike(search_bar))|
-                             (Parts.slot3.ilike(search_bar)))
+
+        #Search word matching (2 words to X words)
+        loop_index = 0
+        search_split = search_bar.strip().split()
+        filter_match = []
+        length = len(search_split)
+        while loop_index < len(search_split):
+            match = False
+            for search_length in range(length,1,-1):
+                if loop_index + search_length <= len(search_split):
+                    word = " ".join(search_split[loop_index:loop_index+search_length])
+                    if word.lower() in (master_list_lower):
+                        loop_index += search_length
+                        match = True
+                        filter_match.append(master_list_lower[word.lower()])
+                        break
+
+            #1 word match
+            if not match:
+                filter_match.append(search_split[loop_index])
+                loop_index += 1
+
+
+        #Filter results by search
+
+        for c in filter_match:
+            search_filter = [Tracks.track_name.ilike(c),
+                      Vehicles.vehicle_name.ilike(c),
+                      WR_Times.player.ilike(c),
+                      Parts.slot1.ilike(c),
+                      Parts.slot2.ilike(c),
+                      Parts.slot3.ilike(c)]
+
+            try:
+                search_time = float(c)
+                if search_time > 0:
+                    search_filter.append(WR_Times.time == search_time)
+                else:
+                    result_errors.append(f"(search) {search_time} cannot be negative")
+            except ValueError:
+                pass
+
+            try:
+                search_tune = int(c)
+                if search_tune > 0:
+                    search_filter.extend([Tunes.tune1 == search_tune,
+                                Tunes.tune2 == search_tune,
+                                Tunes.tune3 == search_tune,
+                                Tunes.tune4 == search_tune])
+                else:
+                    result_errors.append(f"(search) {search_tune} cannot be negative")
+            except ValueError:
+                pass
+
+            setup = setup.filter(or_(*search_filter))
 
     #Filter results for wrs
     if wr_checked:
