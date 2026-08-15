@@ -3,23 +3,6 @@
     box-sizing: border-box;
 }
 
-:root
-{
-    --background-color: rgb(7, 18, 36);
-    --text-color: white;
-    --gold-title: rgb(255, 184, 0);
-    --selected-border: rgb(0, 163, 255);
-    --selected-shadow: rgba(0, 163, 255, 0.4);
-    --hover-background-color: rgba(0, 163, 255, 0.12);
-    --checked: rgb(0, 136, 255);
-    --input-background: rgb(8, 23, 46);
-    --results-background: rgb(11, 28, 54);
-    --input-border: rgb(28, 49, 76);
-    --table-header-text: rgb(100, 139, 189);
-    --table-header-border-line: rgba(100, 139, 189, 0.4);
-    --table-body-border-line: rgba(255, 255, 255, 0.08);
-}
-
 .dark
 {
     --background-color: rgb(7, 18, 36);
@@ -30,8 +13,8 @@
     --hover-background-color: rgba(0, 163, 255, 0.12);
     --checked: rgb(0, 136, 255);
     --input-background: rgb(8, 23, 46);
-    --results-background: rgb(11, 28, 54);
-    --input-border: rgb(28, 49, 76);
+    --results-background: linear-gradient(180deg, rgb(11, 28, 54) 0%, rgb(7, 18, 36) 50%, rgb(3, 8, 16) 100%);
+    --input-border: rgba(100, 139, 189, 0.35);
     --table-header-text: rgb(100, 139, 189);
     --table-header-border-line: rgba(100, 139, 189, 0.4);
     --table-body-border-line: rgba(255, 255, 255, 0.08);
@@ -204,7 +187,7 @@ details[open] > summary
     background-color: var(--input-background);
     border: 1px solid var(--input-border);
     color: var(--text-color);
-    width: 100px;
+    width: 150px;
 }
 
 .search-bar button:hover
@@ -219,7 +202,7 @@ details[open] > summary
 {
     padding: 16px;
     border-radius: 8px;
-    background-color: var(--results-background);
+    background: var(--results-background);
     border: 1px solid var(--input-border);
 }
 
@@ -232,7 +215,7 @@ tr
 {
     width: 100%;
     margin-top: 12px;
-    background-color: var(--results-background);
+    background: var(--results-background);
     border: 1px solid var(--input-border);
     border-radius: 8px;
 }
@@ -366,7 +349,7 @@ tr
 
 .world_records > input[type="checkbox"]
 {
-    background-color: var(--results-background);
+    background: var(--results-background);
 }
 
 .title
@@ -475,7 +458,7 @@ label
 
 .settings_menu > label > select
 {
-    background-color: var(--results-background);
+    background: var(--results-background);
     border: 1px solid var(--input-border);
     width: 100%;
     color: var(--text-color);
@@ -531,6 +514,11 @@ summary:hover
     cursor: pointer;
 }
 
+input:hover
+{
+    cursor: text;
+}
+
 .main_title
 {
     font-weight: 800;
@@ -548,4 +536,32 @@ summary:hover
 option
 {
     color: var(--text-color);
+}
+
+.dark select option
+{
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.light select option
+{
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.results td form
+{
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.delete_submit > div > button
+{
+    display: inline;
+    padding: 0;
+    margin: 0;
+    height: fit-content;
+    width: 100px;
 }

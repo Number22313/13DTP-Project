@@ -1,67 +1,65 @@
 {% extends 'layout.html' %}
 {% block content %}
-<body>
-    <h1 class="title">LEADERBOARDS</h1>
-    <div class="leaderboards">
-        <div class="results">
-            <h2 class="table_title">TOP PLAYERS (WRS)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Rank</td>
-                        <td>Player</td>
-                        <td>WRs</td>
-                    </tr>
-                </thead>
+<h1 class="title">LEADERBOARDS</h1>
+<div class="leaderboards">
+    <div class="results">
+        <h2 class="table_title">TOP PLAYERS (WRS)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <td>Rank</td>
+                    <td>Player</td>
+                    <td>WRs</td>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {% for wrs, player in player_wr_count %}
-                        {% if loop.index <= session.get('rows_per_page')|int %}
-                            <tr>
-                                <td>
-                                    {% if loop.index == 1 %}&#x1f947
-                                    {% elif loop.index == 2 %}&#x1F948
-                                    {% elif loop.index == 3 %}&#x1F949
-                                    {% endif %}
-                                    {{loop.index}}
-                                </td>
-                                <td>{{player}}</td>
-                                <td>{{wrs}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="results">
-            <h2 class="table_title">MOST USED PARTS</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Rank</td>
-                        <td>Slot1</td>
-                        <td>Slot2</td>
-                        <td>Slot3</td>
-                        <td>Times Used</td>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for count, part_id, i in parts_count %}
-                        {% if loop.index <= session.get('rows_per_page')|int %}
-                            <tr>
-                                <td>{{loop.index}}</td>
-                                <td>{{i.slot1}}</td>
-                                <td>{{i.slot2}}</td>
-                                <td>{{i.slot3}}</td>
-                                <td>{{count}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            <tbody>
+                {% for wrs, player in player_wr_count %}
+                    {% if loop.index <= session.get('rows_per_page')|int %}
+                        <tr>
+                            <td>
+                                {% if loop.index == 1 %}&#x1f947
+                                {% elif loop.index == 2 %}&#x1F948
+                                {% elif loop.index == 3 %}&#x1F949
+                                {% endif %}
+                                {{loop.index}}
+                            </td>
+                            <td>{{player}}</td>
+                            <td>{{wrs}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</body>
+
+    <div class="results">
+        <h2 class="table_title">MOST USED PARTS</h2>
+        <table>
+            <thead>
+                <tr>
+                    <td>Rank</td>
+                    <td>Slot1</td>
+                    <td>Slot2</td>
+                    <td>Slot3</td>
+                    <td>Times Used</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for count, part_id, i in parts_count %}
+                    {% if loop.index <= session.get('rows_per_page')|int %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{i.slot1}}</td>
+                            <td>{{i.slot2}}</td>
+                            <td>{{i.slot3}}</td>
+                            <td>{{count}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

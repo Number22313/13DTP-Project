@@ -1,152 +1,148 @@
 {% extends 'layout.html' %}
 {% block content %}
-<body>
-    <h1 class="title">RECORDS</h1>
+<h1 class="title">RECORDS</h1>
 
-    <div class="search-form">
-        <form method="GET" action="{{ url_for('search') }}">
-            <div class="search-grid">
-                <div class="search-box">
-                    <label>Time</label>
-                    <input type="number" step="any" name="time"><br>
-                </div>
+<div class="search-form">
+    <form method="GET" action="{{ url_for('search') }}">
+        <div class="search-grid">
+            <div class="search-box">
+                <label>Time</label>
+                <input type="number" step="any" name="time"><br>
+            </div>
 
-                <div class="search-box">
-                    <label>Player</label>
-                    <details class="expand" name="expand">
-                        <summary></summary> 
-                        <div class="expand_details">
-                            {% for i in players %}
-                                <label class="expand_options">
-                                    <span>{{i}}</span>
-                                    <input type="checkbox" value="{{i}}" name="player_filter">
-                                </label>
-                            {% endfor %}
-                        </div>
-                    </details>
-                </div>
-
-                <div class="search-box">
-                    <label>Tracks</label>
-                    <details class="expand" name="expand">
-                        <summary></summary> 
-                        <div class="expand_details">
-                            {% for i in tracks_list %}
-                                <label class="expand_options">
-                                    <span>{{i}}</span>
-                                    <input type="checkbox" value="{{i}}" name="track_filter">
-                                </label>
-                            {% endfor %}
-                        </div>
-                    </details>
-                </div>
-
-                <div class="search-box">
-                    <label>Tunes</label>
-                    <div class="multi-select">
-                        <input type="number" max="20" min="1" name="tune1">
-                        <input type="number" max="20" min="1" name="tune2">
-                        <input type="number" max="20" min="1" name="tune3">
-                        <input type="number" max="20" min="1" name="tune4">
-                    </div>
-                </div>
-
-                <div class="search-box">
-                    <label>Vehicles</label>
-                    <details class="expand" name="expand">
-                        <summary></summary> 
-                        <div class="expand_details">
-                            {% for i in vehicles_list %}
-                                <label class="expand_options">
-                                    <span>{{i}}</span>
-                                    <input type="checkbox" value="{{i}}" name="vehicle_filter">
-                                </label>
-                            {% endfor %}
-                        </div>
-                    </details>
-                </div>
-
-                <div class="search-box">
-                    <label>Parts</label>
-                    <div class="multi-select">
-                        {% for i in range(3) %}
-                        <details class="expand" name="expand">
-                            <summary>Slot {{i+1}}</summary>
-                            <div class="expand_details">
-                                {% for x in parts_list %}
-                                    <label class="expand_options">
-                                        <span>{{x}}</span>
-                                        <input type="checkbox" value="{{x}}" name="part_filter">
-                                    </label>
-                                {% endfor %}
-                            </div>
-                        </details>
+            <div class="search-box">
+                <label>Player</label>
+                <details class="expand" name="expand">
+                    <summary></summary> 
+                    <div class="expand_details">
+                        {% for i in players %}
+                            <label class="expand_options">
+                                <span>{{i}}</span>
+                                <input type="checkbox" value="{{i}}" name="player_filter">
+                            </label>
                         {% endfor %}
                     </div>
+                </details>
+            </div>
+
+            <div class="search-box">
+                <label>Tracks</label>
+                <details class="expand" name="expand">
+                    <summary></summary> 
+                    <div class="expand_details">
+                        {% for i in tracks_list %}
+                            <label class="expand_options">
+                                <span>{{i}}</span>
+                                <input type="checkbox" value="{{i}}" name="track_filter">
+                            </label>
+                        {% endfor %}
+                    </div>
+                </details>
+            </div>
+
+            <div class="search-box">
+                <label>Tunes</label>
+                <div class="multi-select">
+                    <input type="number" max="20" min="1" name="tune1">
+                    <input type="number" max="20" min="1" name="tune2">
+                    <input type="number" max="20" min="1" name="tune3">
+                    <input type="number" max="20" min="1" name="tune4">
                 </div>
-                
-                <label class="expand_options world_records">
-                    <span>World Records</span>
-                    <input type="checkbox" name="wr_checked">
-                </label>
-                
-                <button type="submit" class="clear_filters">Clear Filters</button>
             </div>
 
-            <br>
-
-            <div class="search-bar">
-                <input type="search" name="search_bar" value="{{search_bar}}" placeholder="Eg. Ndwg Bottom Gear">
-                <button type="submit">Enter</button>
+            <div class="search-box">
+                <label>Vehicles</label>
+                <details class="expand" name="expand">
+                    <summary></summary> 
+                    <div class="expand_details">
+                        {% for i in vehicles_list %}
+                            <label class="expand_options">
+                                <span>{{i}}</span>
+                                <input type="checkbox" value="{{i}}" name="vehicle_filter">
+                            </label>
+                        {% endfor %}
+                    </div>
+                </details>
             </div>
-        </form>
+
+            <div class="search-box">
+                <label>Parts</label>
+                <div class="multi-select">
+                    {% for i in range(3) %}
+                    <details class="expand" name="expand">
+                        <summary>Slot {{i+1}}</summary>
+                        <div class="expand_details">
+                            {% for x in parts_list %}
+                                <label class="expand_options">
+                                    <span>{{x}}</span>
+                                    <input type="checkbox" value="{{x}}" name="part_filter">
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </details>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <label class="expand_options world_records">
+                <span>World Records</span>
+                <input type="checkbox" name="wr_checked">
+            </label>
+            
+            <button type="submit" class="clear_filters">Clear Filters</button>
+        </div>
+
+        <br>
+
+        <div class="search-bar">
+            <input type="search" name="search_bar" value="{{search_bar}}" placeholder="Eg. Ndwg Bottom Gear">
+            <button type="submit">Enter</button>
+        </div>
+    </form>
+</div>
+
+{% if result_errors%}
+    <div>
+        {% for i in result_errors %}
+            <div>{{i}},</div><br>
+        {% endfor %}
     </div>
+{% endif %}
 
-    {% if result_errors%}
-        <div>
-            {% for i in result_errors %}
-                <div>{{i}},</div><br>
-            {% endfor %}
+<br>
+
+<div class="results">
+    {% if result %}
+        <table>
+            <thead>
+                <tr>
+                    <td>Setup ID</td>
+                    <td>Time</td>
+                    <td>Player</td>
+                    <td>Track</td>
+                    <td>Tunes</td>
+                    <td>Vehicle</td>
+                    <td>Parts</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in result %}
+                    <tr>
+                        <td>{{i.setup_id}}</td>
+                        <td>{{i.wr_time.time}}</td>
+                        <td>{{i.wr_time.player}}</td>
+                        <td>{{i.track.track_name}}</td>
+                        <td>{{i.tune.tune1}}/{{i.tune.tune2}}/{{i.tune.tune3}}/{{i.tune.tune4}}</td>
+                        <td>{{i.vehicle.vehicle_name}}</td>
+                        <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="norecords">
+            <p>No records found that match the filters</p>
         </div>
     {% endif %}
-
-    <br>
-
-    <div class="results">
-        {% if result %}
-            <table>
-                <thead>
-                    <tr>
-                        <td>Setup ID</td>
-                        <td>Time</td>
-                        <td>Player</td>
-                        <td>Track</td>
-                        <td>Tunes</td>
-                        <td>Vehicle</td>
-                        <td>Parts</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in result %}
-                        {% if loop.index <= session.get('rows_per_page')|int %}
-                            <tr>
-                                <td>{{i.setup_id}}</td>
-                                <td>{{i.wr_time.time}}</td>
-                                <td>{{i.wr_time.player}}</td>
-                                <td>{{i.track.track_name}}</td>
-                                <td>{{i.tune.tune1}}/{{i.tune.tune2}}/{{i.tune.tune3}}/{{i.tune.tune4}}</td>
-                                <td>{{i.vehicle.vehicle_name}}</td>
-                                <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="norecords">
-                <p>No records found that match the filters</p>
-            </div>
-        {% endif %}
-    </div>
-</body>
+</div>
 {% endblock %}
