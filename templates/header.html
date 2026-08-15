@@ -1,10 +1,41 @@
-<header class="head">
+<header class="head {{ session.get('theme', 'dark')}}">
     <nav>
-        <div class="links">
-            <a href="{{ url_for('Home') }}" class="{{ 'active_page' if active_page == 'Home'}}">Home</a>
-            <a href="{{ url_for('setups') }}" class="{{ 'active_page' if active_page == 'setups'}}">Setups</a>
-            <a href="{{ url_for('leaderboards') }}" class="{{ 'active_page' if active_page == 'leaderboards'}}">Leaderboards</a>
-            <a href="{{ url_for('search') }}" class="{{ 'active_page' if active_page == 'search'}}">Search</a>
+        <div class="nav_sections">
+            <div>
+                <p class="main_title">HCR2 Setups Guide</p>
+            </div>
+
+            <div class="links_and_settings">
+                <div class="links">
+                    <a href="{{ url_for('Home') }}" class="{{ 'active_page' if active_page == 'Home'}}">Home</a>
+                    <a href="{{ url_for('setups') }}" class="{{ 'active_page' if active_page == 'setups'}}">Setups</a>
+                    <a href="{{ url_for('leaderboards') }}" class="{{ 'active_page' if active_page == 'leaderboards'}}">Leaderboards</a>
+                    <a href="{{ url_for('search') }}" class="{{ 'active_page' if active_page == 'search'}}">Search</a>
+                </div>
+                <details class="settings">
+                    <summary>Settings</summary>
+                    <form class="settings_menu" action="{{request.path}}" method="POST">
+                        <label class="settings_section">
+                            <span>Dark Theme:</span>
+                            <input type="checkbox" class="settings_theme" name="theme" value="dark" {% if session.get('theme','dark') == 'dark' %} checked {% endif %}>
+                        </label>
+                        <label>
+                            <span>Amount of rows per page</span>
+                            <select name="rows_per_page">
+                                <option disabled hidden selected></option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                            </select>
+                        </label>
+                        <label>
+                            <input type="submit" value="Save" name="Save">
+                        </label>
+                    </form>
+                </details>
+            </div>
         </div>
     </nav>
 </header>

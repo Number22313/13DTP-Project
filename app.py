@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, or_
 from sqlalchemy.orm import aliased
@@ -6,6 +6,7 @@ from sqlalchemy.orm import aliased
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.secret_key = 'temporary_secret_key'
 db = SQLAlchemy(app)
 
 tracks_list = ["Bottom Gear","No Skidding","Cuptown Relax","Landing Drive","Seesaw Road",
@@ -125,6 +126,28 @@ class Parts(db.Model):
     slot2 = db.Column(db.Text, nullable=False)
     slot3 = db.Column(db.Text, nullable=False)
     setups = db.relationship("Setups", back_populates="parts_combinations")
+
+
+@app.before_request
+def settings_menu():
+    rpp_options = {'5','10','20','30','40'}
+    rpp = request.form.get('rows_per_page')
+    theme = request.form.get('theme')
+    if 'theme' not in session:
+            session['theme'] = 'dark'
+    
+    if request.method == 'POST' and 'Save' in request.form:
+        #validation
+        if theme and theme == 'dark':
+            session['theme'] = 'dark'
+        else:
+            session['theme'] = 'light'
+
+        if rpp in rpp_options:
+            session['rows_per_page'] = rpp
+        else:
+            session['rows_per_page'] = '10'
+        return redirect(request.referrer or url_for('Home'))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -312,12 +335,7 @@ def setups():
                            insert_errors=insert_errors)
 
 
-@app.route('/Times')
-def times():
-    times = WR_Times.query.all()
-    return render_template('Times.html', times=times, active_page='times')
-
-@app.route('/Search')
+@app.route('/Search', methods=['GET', 'POST'])
 def search():
     setup = []
     result_errors = []
@@ -513,7 +531,7 @@ def search():
                            result_errors=result_errors)
 
 
-@app.route('/Leaderboards')
+@app.route('/Leaderboards', methods=['GET', 'POST'])
 def leaderboards():
     all_setups = Setups.query.all()
 

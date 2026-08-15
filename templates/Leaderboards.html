@@ -2,9 +2,9 @@
 {% block content %}
 <body>
     <h1 class="title">LEADERBOARDS</h1>
-    <div>
-        <h2 class="table_title">TOP PLAYERS (WRS)</h2>
+    <div class="leaderboards">
         <div class="results">
+            <h2 class="table_title">TOP PLAYERS (WRS)</h2>
             <table>
                 <thead>
                     <tr>
@@ -16,28 +16,26 @@
 
                 <tbody>
                     {% for wrs, player in player_wr_count %}
-                    {% if loop.index <= 20 %}
-                        <tr>
-                            <td>
-                                {% if loop.index == 1 %}&#x1f947
-                                {% elif loop.index == 2 %}&#x1F948
-                                {% elif loop.index == 3 %}&#x1F949
-                                {% endif %}
-                                {{loop.index}}
-                            </td>
-                            <td>{{player}}</td>
-                            <td>{{wrs}}</td>
-                        </tr>
-                    {% endif %}
+                        {% if loop.index <= session.get('rows_per_page')|int %}
+                            <tr>
+                                <td>
+                                    {% if loop.index == 1 %}&#x1f947
+                                    {% elif loop.index == 2 %}&#x1F948
+                                    {% elif loop.index == 3 %}&#x1F949
+                                    {% endif %}
+                                    {{loop.index}}
+                                </td>
+                                <td>{{player}}</td>
+                                <td>{{wrs}}</td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        <br>
-
-        <h2 class="table_title">MOST USED PARTS</h2>
         <div class="results">
+            <h2 class="table_title">MOST USED PARTS</h2>
             <table>
                 <thead>
                     <tr>
@@ -51,15 +49,15 @@
 
                 <tbody>
                     {% for count, part_id, i in parts_count %}
-                    {% if loop.index <= 20 %}
-                        <tr>
-                            <td>{{loop.index}}</td>
-                            <td>{{i.slot1}}</td>
-                            <td>{{i.slot2}}</td>
-                            <td>{{i.slot3}}</td>
-                            <td>{{count}}</td>
-                        </tr>
-                    {% endif %}
+                        {% if loop.index <= session.get('rows_per_page')|int %}
+                            <tr>
+                                <td>{{loop.index}}</td>
+                                <td>{{i.slot1}}</td>
+                                <td>{{i.slot2}}</td>
+                                <td>{{i.slot3}}</td>
+                                <td>{{count}}</td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

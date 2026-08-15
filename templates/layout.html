@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
+<body class="{{ session.get('theme', 'dark')}}">
     {% include 'header.html' %}
     {% block content %}{% endblock %}
     {% include 'footer.html' %}

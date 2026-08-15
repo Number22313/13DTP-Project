@@ -128,15 +128,17 @@
                 </thead>
                 <tbody>
                     {% for i in result %}
-                    <tr>
-                        <td>{{i.setup_id}}</td>
-                        <td>{{i.wr_time.time}}</td>
-                        <td>{{i.wr_time.player}}</td>
-                        <td>{{i.track.track_name}}</td>
-                        <td>{{i.tune.tune1}}/{{i.tune.tune2}}/{{i.tune.tune3}}/{{i.tune.tune4}}</td>
-                        <td>{{i.vehicle.vehicle_name}}</td>
-                        <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
-                    </tr>
+                        {% if loop.index <= session.get('rows_per_page')|int %}
+                            <tr>
+                                <td>{{i.setup_id}}</td>
+                                <td>{{i.wr_time.time}}</td>
+                                <td>{{i.wr_time.player}}</td>
+                                <td>{{i.track.track_name}}</td>
+                                <td>{{i.tune.tune1}}/{{i.tune.tune2}}/{{i.tune.tune3}}/{{i.tune.tune4}}</td>
+                                <td>{{i.vehicle.vehicle_name}}</td>
+                                <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

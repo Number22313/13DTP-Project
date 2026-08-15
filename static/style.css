@@ -5,9 +5,58 @@
 
 :root
 {
-    --background-color: black;
+    --background-color: rgb(7, 18, 36);
     --text-color: white;
-    background-color: rgb(7, 18, 36);
+    --gold-title: rgb(255, 184, 0);
+    --selected-border: rgb(0, 163, 255);
+    --selected-shadow: rgba(0, 163, 255, 0.4);
+    --hover-background-color: rgba(0, 163, 255, 0.12);
+    --checked: rgb(0, 136, 255);
+    --input-background: rgb(8, 23, 46);
+    --results-background: rgb(11, 28, 54);
+    --input-border: rgb(28, 49, 76);
+    --table-header-text: rgb(100, 139, 189);
+    --table-header-border-line: rgba(100, 139, 189, 0.4);
+    --table-body-border-line: rgba(255, 255, 255, 0.08);
+}
+
+.dark
+{
+    --background-color: rgb(7, 18, 36);
+    --text-color: white;
+    --gold-title: rgb(255, 184, 0);
+    --selected-border: rgb(0, 163, 255);
+    --selected-shadow: rgba(0, 163, 255, 0.4);
+    --hover-background-color: rgba(0, 163, 255, 0.12);
+    --checked: rgb(0, 136, 255);
+    --input-background: rgb(8, 23, 46);
+    --results-background: rgb(11, 28, 54);
+    --input-border: rgb(28, 49, 76);
+    --table-header-text: rgb(100, 139, 189);
+    --table-header-border-line: rgba(100, 139, 189, 0.4);
+    --table-body-border-line: rgba(255, 255, 255, 0.08);
+
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.light
+{
+    --background-color: rgb(248, 250, 252);
+    --text-color: black;
+    --gold-title: rgb(255, 184, 0);
+    --selected-border: rgb(2, 132, 199);
+    --selected-shadow: rgba(2, 132, 199, 0.4);
+    --hover-background-color: rgba(2, 132, 199, 0.12);
+    --checked: rgb(2, 132, 199);
+    --input-background: rgb(241, 245, 249);
+    --results-background: white;
+    --input-border: rgb(203, 213, 225);
+    --table-header-text: rgb(71, 85, 105);
+    --table-header-border-line: rgba(71, 85, 105, 0.4);
+    --table-body-border-line: rgba(0, 0, 0, 0.08);
+
+    background-color: var(--background-color);
     color: var(--text-color);
 }
 
@@ -28,7 +77,7 @@ a
     text-decoration: none;
     color: var(--text-color);
     padding: 5px;
-    padding-bottom: 5vh;
+    align-items: center;
 }
 
 input,select,button
@@ -41,22 +90,21 @@ input,select,button
 .links
 {
     display: flex;
-    justify-content: space-around;
-    gap: 5vh;
     align-items: center;
+    gap: 20px;
 }
 
 a.active_page
 {
-    color: rgb(0, 163, 255);
-    text-decoration: underline 1px rgb(0, 163, 255);
+    color: var(--selected-border);
+    text-decoration: underline 1px var(--selected-border);
     text-underline-offset: 12px;
 }
 
 a:hover
 {
-    color: rgb(0, 163, 255);
-    text-decoration: underline 1px rgb(0, 163, 255);
+    color: var(--selected-border);
+    text-decoration: underline 1px var(--selected-border);
     text-underline-offset: 12px;
 }
 
@@ -81,9 +129,9 @@ a:hover
 {
     width: 100%;
     height: 30px;
-    background-color: rgb(8, 23, 46);
-    border: 1px solid rgb(28, 49, 76);
-    color: white;
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
 }
 
 .multi-select
@@ -105,26 +153,26 @@ a:hover
     width: 0;
     min-width: 0;
     height: 30px;
-    background-color: rgb(8, 23, 46);
-    border-color: rgb(28, 49, 76);
-    color: white;
+    background-color: var(--input-background);
+    border-color: var(--input-border);
+    color: var(--text-color);
 }
 
 .multi-select > select
 {
     flex: 1;
     height: 30px;
-    background-color: rgb(8, 23, 46);
-    border-color: rgb(28, 49, 76);
-    color: white;
+    background-color: var(--input-background);
+    border-color: var(--input-border);
+    color: var(--text-color);
 }
 
 .search-bar input,
 .search-bar button
 {
     height: 30px;
-    background-color: rgb(8, 23, 46);
-    border-color: rgb(28, 49, 76);
+    background-color: var(--input-background);
+    border-color: var(--input-border);
     color: var(--text-color);
 }
 
@@ -133,7 +181,7 @@ select:focus,
 button:focus,
 details[open] > summary
 {
-    border-color: rgb(0, 163, 255);
+    border-color: var(--selected-border);
     box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
     outline: none;
 }
@@ -153,16 +201,16 @@ details[open] > summary
 
 .search-bar button
 {
-    background-color: rgb(8, 23, 46);
-    border: 1px solid rgb(28, 49, 76);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     color: var(--text-color);
     width: 100px;
 }
 
 .search-bar button:hover
 {
-    color: rgb(0, 163, 255);
-    border: 1px solid rgb(0, 163, 255);
+    color: var(--text-color);
+    border: 1px solid var(--selected-border);
     background-color: rgb(15, 38, 74);
     box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
 }
@@ -171,8 +219,8 @@ details[open] > summary
 {
     padding: 16px;
     border-radius: 8px;
-    background-color: rgb(11, 28, 54);
-    border: 1px solid rgb(28, 49, 76);
+    background-color: var(--results-background);
+    border: 1px solid var(--input-border);
 }
 
 tr
@@ -184,8 +232,8 @@ tr
 {
     width: 100%;
     margin-top: 12px;
-    background-color: rgb(11, 28, 54);
-    border: 1px solid rgb(28, 49, 76);
+    background-color: var(--results-background);
+    border: 1px solid var(--input-border);
     border-radius: 8px;
 }
 
@@ -198,32 +246,32 @@ tr
 
 .results table thead tr
 {
-    border-bottom: 2px solid rgba(100, 139, 189, 0.4);
+    border-bottom: 2px solid var(--table-header-border-line);
 }
 
 .results table thead td
 {
-    background-color: rgb(8, 23, 46);
-    color: rgb(100, 139, 189);
+    background-color: var(--input-background);
+    color: var(--table-header-text);
     padding: 10px 10px;
 }
 
 .results table tbody tr
 {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--table-body-border-line);
     transition: background-color 0.15s ease;
 }
 
 .results table tbody td
 {
-    color: rgb(255, 255, 255);
+    color: var(--text-color);
     padding: 10px 10px;
     background: transparent;
 }
 
 .results table tbody tr:hover
 {
-    background-color: rgba(0, 163, 255, 0.12);
+    background-color: var(--hover-background-color);
 }
 
 .expand
@@ -236,8 +284,8 @@ tr
 {
     width: 100%;
     height: 30px;
-    background-color: rgb(8, 23, 46);
-    border: 1px solid rgb(28, 49, 76);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -249,8 +297,8 @@ tr
     position: absolute;
     width: 100%;
     padding: 5px 5px;
-    background-color: rgb(8, 23, 46);
-    border: 1px solid rgb(28, 49, 76);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     border-radius: 6px;
     display: flex;
     flex-direction: column;
@@ -281,8 +329,8 @@ tr
     width: 16px;
     height: 16px;
     appearance: none;
-    background-color: rgb(8, 23, 46);
-    border: 1px solid rgb(28, 49, 76);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     flex-shrink: 0;
     transition: all 0.2s ease;
@@ -290,16 +338,16 @@ tr
 
 .expand_options input[type="checkbox"]:checked
 {
-    background-color: rgb(0, 136, 255);
-    border-color: rgb(0, 136, 255);
+    background-color: var(--checked);
+    border-color: var(--checked);
     box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
     background-image: url(check.svg);
 }
 
 .expand_options:hover
 {
-    background-color: rgba(0, 163, 255, 0.12);
-    border-color: rgb(0, 136, 255);
+    background-color: var(--hover-background-color);
+    border-color: var(--checked);
 }
 
 .multi-select details:last-child .expand_details
@@ -310,15 +358,15 @@ tr
 
 .world_records
 {
-    background-color: rgb(8, 23, 46);
-    border: 1px solid rgb(28, 49, 76);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     border-radius: 6px;
     height: 30px;
 }
 
 .world_records > input[type="checkbox"]
 {
-    background-color: rgb(11, 28, 54);
+    background-color: var(--results-background);
 }
 
 .title
@@ -326,7 +374,7 @@ tr
     display: flex;
     justify-content: center;
     font-weight: 800;
-    color: rgb(255, 184, 0);
+    color: var(--gold-title);
     letter-spacing: 1.5px;
     margin-bottom: 20px;
 }
@@ -351,17 +399,153 @@ label
 
 .clear_filters
 {
-    color: white;
+    color: var(--text-color);
     border: none;
-    background-color: rgb(8, 23, 46);
+    background-color: var(--input-background);
     border: transparent;
     border-radius: 6px;
-    border: 1px solid rgb(28, 49, 76);
+    border: 1px solid var(--input-border);
     height: 30px;
 }
 
 .clear_filters:hover
 {
-    background-color: rgba(0, 163, 255, 0.12);
-    border-color: rgb(0, 136, 255);
+    background-color: var(--hover-background-color);
+    border-color: var(--checked);
+}
+
+.leaderboards
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+
+.nav_sections
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+}
+
+.settings
+{
+    position: relative;
+    display: inline-block;
+}
+
+.settings summary
+{
+    cursor: pointer;
+    list-style: none;
+    background-color: crimson;
+}
+
+.settings_menu
+{
+    position: absolute;
+    right: 0;
+    width: 200px;
+    margin-top: 12px;
+    background-color: var(--input-background);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+
+.settings_section
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings_section:hover
+{
+    background-color: var(--hover-background-color);
+    border-color: var(--checked);
+}
+
+.settings_menu > label > select
+{
+    background-color: var(--results-background);
+    border: 1px solid var(--input-border);
+    width: 100%;
+    color: var(--text-color);
+}
+
+.settings_menu > label > select:focus
+{
+    border: 1px solid var(--checked);
+    box-shadow: 0 0 8px var(--selected-shadow);
+}
+
+.settings_theme
+{
+    width: 16px;
+    height: 16px;
+    appearance: none;
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.settings_theme:checked
+{
+    background-color: var(--checked);
+    border-color: var(--checked);
+    box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
+    background-image: url(check.svg);
+}
+
+.settings_menu > label > input[type="submit"]
+{
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    border-radius: 8px;
+    width: 100%;
+    text-align: center;
+    height: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+input:hover,
+select:hover,
+summary:hover
+{
+    background-color: var(--hover-background-color);
+    border-color: var(--checked);
+    box-shadow: 0 0 8px rgb(0, 163, 255, 0.4);
+    cursor: pointer;
+}
+
+.main_title
+{
+    font-weight: 800;
+    font-size: 1.8rem;
+}
+
+.links_and_settings
+{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+option
+{
+    color: var(--text-color);
 }
