@@ -1,5 +1,106 @@
 {% extends 'layout.html' %}
 {% block content %}
-<body>
-</body>
+<div class="home">
+    <img src="static/beackbackground.png" class="background">
+
+    <div class="home-title">
+        <h1 class="title body-title">HCR2 Time Attack Setups Guide</h1>
+        <h2 class="body-subtitle">Find the best setups for Time Attack on any track with any vehicle</h2>
+    </div>
+
+    <div class="widgets">
+        <div class="home_links">
+            <h1>Quick Navigation</h1>
+            <div>
+                <a href="{{ url_for('setups', _anchor='all_setups') }}">Browse All Setups</a>
+                <a href="{{ url_for('setups') }}">Submit a Setup</a>
+                <a href="{{ url_for('search') }}">Search for a Setup</a>
+                <a href="{{ url_for('search', wr_checked='on') }}">World Record Setups</a>
+                <a href="{{ url_for('leaderboards') }}">Statistics</a>
+                <a href="{{ url_for('Home', _anchor='information') }}">Information</a>
+            </div>
+        </div>
+
+        <div class="home_stats">
+            <h1>Statistics</h1>
+            
+            <div>
+                <p>Total Setups</p>
+                <h3>{{setups_count}}</h3>
+            </div>
+
+            <div>
+                <p>Total Parts Combinations</p>
+                <h3>{{total_parts}}</h3>
+            </div>
+
+            <div>
+                <p>Total Players</p>
+                <h3>{{total_players}}</h3>
+            </div>
+        </div>
+
+        <div>
+            <h1>Fastest Times</h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>Rank</td>
+                        <td>Time</td>
+                        <td>Player</td>
+                        <td>Track</td>
+                        <td>Vehicle</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in fastest_times %}
+                    {% if loop.index <= 5 %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{i.wr_time.time}}</td>
+                            <td>{{i.wr_time.player}}</td>
+                            <td>{{i.track.track_name}}</td>
+                            <td>{{i.vehicle.vehicle_name}}</td>
+                        </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+
+    <div id="information" class="information">
+        <h1>Information</h1><br>
+        
+        <div>
+            <h2>What are setups?</h2>
+            <p>Setups are the best combination of parts and tunes that all of the top players use to get the fastest times. Although having tunes at 20 makes most of the vehicles faster, some vehicles benefit more from lower tunes which is seen most commonly on motocross where players want to flip faster so they decrease the balance.</p><br>
+
+            <h2>Where can I search for setups?</h2>
+            <p>There is a button in quick navigation as well as a link in the navigation bar at the top which takes you to the search page, it has a search bar and filters for filtering any combination of setups.</p><br>
+
+            <h2>Where can I insert and/or delete setups?</h2>
+            <p>On the "Setups" page there is a table with every single setup in the database, there is also a button next to each setup to delete it, as well as a form at the top of the page to insert more setups.</p><br>
+
+            <h2>How do I use these setups?</h2>
+            <p>For the tunes system, the first tune corresponds to the first attribute (eg. engine, grip, balance) so if the tunes were 4,11,10,5 the first attribute would be set to 4/20, the second attribute to 11/20 etc. However for parts the order doesn't matter so you dont need to stick to the order in the setup. There is a video below explaining this:</p>
+            <video controls src="{{ url_for('static', filename='Setup_Tutorial.mp4') }}"></video><br>
+            
+            <h2>What are World Records?</h2>
+            <p>World records are the global fastest time on one track, so every world record setup is what the current world record holder for the fastest time on that track is using.</p><br>
+
+            <h2>Why does this web-app exist?</h2>
+            <p>
+                In Hill Climb Racing 2 (HCR2) there are 201 different and unique tracks that players can compete to get the fastest time on. The issue is that the current leaderboard system only shows the time, player, and vehicle but not the tunes and sometimes not even the parts. To try and solve this some of the players with top times made discord servers to share their tunes and parts which there are now 3 of, but to find specific setups you need to scroll through dozens of channels. HCR2 Setups guide brings the best setups from all 3 servers together in one place while also making it easier to find them.
+            </p>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
 {% endblock %}

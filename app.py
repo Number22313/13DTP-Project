@@ -55,13 +55,6 @@ tracks_list = ["Bottom Gear","No Skidding","Cuptown Relax","Landing Drive","Sees
                    "Carppuccino","Smooth Blend","Bean 2 Tank","Dire Drive",
                    "One Does Not Simply","Ice Era","Logging In","Stumped","The Root Cause",
                    "Natural Sprinters","Let's Hunt Some Torque","Mud's Back on the Menu",
-                   
-                   #Adventure maps
-                   "Countryside","Spring Falls","Forest","City","Mountain","Rustbucket Reef",
-                   "Winter","Mines","Desert Valley","Beach","Backwater Bog","Racer Glacier",
-                   "Patchwork Plant","Switchback Savanna","Gloomvale","Overspill Fun Rig",
-                   "Canyon Arena","Cuptown","Sky Rock Outpost","Forest Trials","Intense City",
-                   "Arena Gauntlet","Raging Winter"
                    ]
 vehicles_list = ["Hill Climber","Scooter","Bus","Hill Climber Mk2","Tractor","Motocross",
                      "Dune Buggy","Sports Car","Monster Truck","Rotator","Super Diesel",
@@ -152,8 +145,22 @@ def settings_menu():
 
 @app.route('/', methods=['GET', 'POST'])
 def Home():
+    setups_count = Setups.query.count()
+    total_parts = Parts.query.count()
+    unique_players = set()
+    for i in WR_Times.query.all():
+        unique_players.add(i.player)
+    total_players = 0
+    for p in unique_players:
+        total_players += 1
+
+    fastest_times = Setups.query.join(WR_Times).order_by(WR_Times.time.asc()).all()
     return render_template('home.html',
-                           active_page='Home')
+                           active_page='Home',
+                           setups_count=setups_count,
+                           total_parts=total_parts,
+                           total_players=total_players,
+                           fastest_times=fastest_times)
 
 
 @app.route('/Delete', methods=['GET', 'POST'])
