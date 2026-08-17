@@ -51,9 +51,15 @@
                     {% if loop.index <= session.get('rows_per_page')|int %}
                         <tr>
                             <td>{{loop.index}}</td>
-                            <td>{{i.slot1}}</td>
-                            <td>{{i.slot2}}</td>
-                            <td>{{i.slot3}}</td>
+                            <td>
+                                <img src="{{ url_for('static', filename=i.slot1+'.webp') }}" alt="{{i.slot1}}" title="{{i.slot1}}">
+                            </td>
+                            <td>
+                                <img src="{{ url_for('static', filename=i.slot2+'.webp') }}" alt="{{i.slot2}}" title="{{i.slot2}}">
+                            </td>
+                            <td>
+                                <img src="{{ url_for('static', filename=i.slot3+'.webp') }}" alt="{{i.slot3}}" title="{{i.slot3}}">
+                            </td>
                             <td>{{count}}</td>
                         </tr>
                     {% endif %}

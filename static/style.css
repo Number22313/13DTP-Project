@@ -631,3 +631,9 @@ option
 {
     font-size: 400%;
 }
+
+td img
+{
+    width: 16px;
+    height: 16px;
+}

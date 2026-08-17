@@ -121,6 +121,21 @@ class Parts(db.Model):
     setups = db.relationship("Setups", back_populates="parts_combinations")
 
 
+@app.errorhandler(404)
+def error(a):
+    return render_template('error.html')
+
+
+def wr_subquery():
+    #World Record setups
+    Setup_subquery = aliased(Setups)
+    return Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
+                                                                .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
+                                                                .filter(Setup_subquery.track_id == Setups.track_id,
+                                                                        Setup_subquery.vehicle_id == Setups.vehicle_id)
+                                                                .scalar_subquery()))
+
+
 @app.before_request
 def settings_menu():
     rpp_options = {'5','10','20','30','40'}
@@ -150,6 +165,7 @@ def Home():
     unique_players = set()
     for i in WR_Times.query.all():
         unique_players.add(i.player)
+    
     total_players = 0
     for p in unique_players:
         total_players += 1
@@ -162,28 +178,6 @@ def Home():
                            total_players=total_players,
                            fastest_times=fastest_times)
 
-
-@app.route('/Delete', methods=['GET', 'POST'])
-def delete():
-    if request.method == "POST":
-        delete_submit = request.form.get("delete submit")
-        if delete_submit == "delete":
-            form = request.form.get("setup")
-            print(f"Found Setup {form}")
-            if form:
-                setup = Setups.query.get(form)
-                #delete the setup if it exists
-                if setup:
-                    db.session.delete(setup)
-                    db.session.flush()
-                    old_player = WR_Times.query.filter(~WR_Times.setups.any()).all()
-                    for i in old_player:
-                        print(f"Deleted unused player: {i.player}")
-                        db.session.delete(i)
-                    print(f"Deleted {setup}")
-                    db.session.commit()
-    all_setups = Setups.query.all()
-    return render_template('delete.html',setups=all_setups, active_page='delete')
 
 @app.route('/Setups', methods=['GET', 'POST'])
 def setups():
@@ -278,6 +272,10 @@ def setups():
 
                 if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
                     insert_errors.append("Duped parts")
+                    not_valid = True
+                
+                if len(player) >= 16:
+                    insert_errors.append(f"{player} is not a real player")
                     not_valid = True
                 
                 if not_valid:
@@ -520,13 +518,7 @@ def search():
 
     #Filter results for wrs
     if wr_checked:
-        Setup_subquery = aliased(Setups)
-
-        setup = (setup.filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
-                                                                .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
-                                                                .filter(Setup_subquery.track_id == Setups.track_id,
-                                                                        Setup_subquery.vehicle_id == Setups.vehicle_id)
-                                                                .scalar_subquery())))
+        setup = wr_subquery()
     
     #All or nothing
     if result_errors:
@@ -554,14 +546,9 @@ def search():
 def leaderboards():
     all_setups = Setups.query.all()
 
-    #WR
-    Setup_subquery = aliased(Setups)
+    #All players with WRs and number of WRs
+    wr = wr_subquery().all()
 
-    wr = (Setups.query.join(WR_Times).filter(WR_Times.time == (db.session.query(func.min(WR_Times.time))
-                                                            .join(Setup_subquery, WR_Times.time_id == Setup_subquery.time_id)
-                                                            .filter(Setup_subquery.track_id == Setups.track_id,
-                                                                    Setup_subquery.vehicle_id == Setups.vehicle_id)
-                                                            .scalar_subquery())).all())
     wr_count = []
     for z in wr:
         wr_count.append(z.wr_time.player)
@@ -599,7 +586,6 @@ def leaderboards():
                            active_page='leaderboards',
                            player_wr_count=player_wr_count,
                            parts_count=parts_count)
-
 
 
 
