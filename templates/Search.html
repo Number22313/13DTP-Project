@@ -1,5 +1,12 @@
 {% extends 'layout.html' %}
 {% block content %}
+
+{% if session.get('settings_error') %}
+    {% for i in session.pop('settings_error') %}
+        <p>{{i}}</p>
+    {% endfor %}
+{% endif %}
+
 <h1 class="title">RECORDS</h1>
 
 <div class="search-form">

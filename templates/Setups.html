@@ -1,5 +1,12 @@
 {% extends 'layout.html' %}
 {% block content %}
+
+{% if session.get('settings_error') %}
+    {% for i in session.pop('settings_error') %}
+        <p>{{i}}</p>
+    {% endfor %}
+{% endif %}
+
 <div class="insert-form">
     <div class="search-form">
         <h1 class="title">SUBMIT SETUPS</h1>
@@ -72,8 +79,10 @@
                 </div>
             </div>
             <br>
+
             <div class="search-bar">
                 <button type="submit" name="insert" value="insert">Insert</button>
+                <button type="submit" class="clear_filters">Clear Fields</button>
             </div>
         </form>
     </div>

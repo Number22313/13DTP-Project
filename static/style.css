@@ -456,7 +456,7 @@ label
     border-color: var(--checked);
 }
 
-.settings_menu > label > select
+.settings_menu > label > input[type="number"]
 {
     background: var(--results-background);
     border: 1px solid var(--input-border);
@@ -464,7 +464,7 @@ label
     color: var(--text-color);
 }
 
-.settings_menu > label > select:focus
+.settings_menu > label > input[type="number"]:focus
 {
     border: 1px solid var(--checked);
     box-shadow: 0 0 8px var(--selected-shadow);
@@ -630,10 +630,16 @@ option
 .body-title
 {
     font-size: 400%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 td img
 {
     width: 16px;
     height: 16px;
+}
+
+footer
+{
+    margin-top: 100px;
 }

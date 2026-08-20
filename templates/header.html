@@ -22,14 +22,15 @@
                         </label>
                         <label>
                             <span>Amount of rows per page</span>
-                            <select name="rows_per_page">
-                                <option disabled hidden selected></option>
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
-                                <option value="40">40</option>
-                            </select>
+                            <input type="number" id="rpp" list="rpp_options" name="rows_per_page" min="1" max="100">
+                            <datalist id="rpp_options">
+                                <option value="5"></option>
+                                <option value="10"></option>
+                                <option value="20"></option>
+                                <option value="30"></option>
+                                <option value="40"></option>
+                                <option value="50"></option>
+                            </datalist>
                         </label>
                         <label>
                             <input type="submit" value="Save" name="Save">

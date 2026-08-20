@@ -138,11 +138,13 @@ def wr_subquery():
 
 @app.before_request
 def settings_menu():
-    rpp_options = {'5','10','20','30','40'}
+    error = []
     rpp = request.form.get('rows_per_page')
     theme = request.form.get('theme')
     if 'theme' not in session:
             session['theme'] = 'dark'
+    if 'rows_per_page' not in session:
+        session['rows_per_page'] = 10
     
     if request.method == 'POST' and 'Save' in request.form:
         #validation
@@ -151,10 +153,20 @@ def settings_menu():
         else:
             session['theme'] = 'light'
 
-        if rpp in rpp_options:
-            session['rows_per_page'] = rpp
-        else:
-            session['rows_per_page'] = '10'
+        try:
+            rpp = int(rpp)
+            if 0 < rpp < 101:
+                session['rows_per_page'] = rpp
+            else:
+                session['rows_per_page'] = 50
+                error.append(f"Rows per page must be between 1 and 100")
+                
+        except (ValueError,TypeError):
+            session['rows_per_page'] = 50
+            error.append(f"{rpp} is not a number")
+
+        if error:
+            session['settings_error'] = error
         return redirect(request.referrer or url_for('Home'))
 
 
@@ -183,6 +195,7 @@ def Home():
 def setups():
     insert_errors = []
     if request.method == 'POST':
+        #Delete block
         if 'setup_delete' in request.form:
             setup_delete = request.form.get('setup_delete')
             try:
@@ -191,7 +204,8 @@ def setups():
                 db.session.commit()
             except ValueError:
                 insert_errors.append(f"{setup_delete} is not a valid id")
-        
+
+        #Insert block
         if 'insert' in request.form:
             insert_submit = request.form.get("insert")
             if insert_submit == "insert":
@@ -225,6 +239,7 @@ def setups():
                 
                 #Back end validation
 
+
                 #Empty fields check
                 if (not time or not player or not track_name or not vehicle_name 
                     or not slot1 or not slot2 or not slot3):
@@ -232,7 +247,7 @@ def setups():
                     not_valid = True
 
 
-                if track_name not in tracks_list:
+                if track_name and track_name not in tracks_list:
                     insert_errors.append(f"{track_name} is not a valid track")
                     not_valid = True
                 
@@ -240,45 +255,47 @@ def setups():
                     try:
                         time = float(time)
                         print(time)
-                        if time < 0:
+                        if time <= 0:
                             insert_errors.append(f"{time} is not a valid time")
                             not_valid = True
-                    except(ValueError,TypeError):
+                    except(ValueError, TypeError):
                         insert_errors.append(f"{time} is not a number")
                         not_valid = True
 
-                for o in tunes_list:
-                    if not o:
-                        insert_errors.append(f"Not all tunes fields are full")
-                        not_valid=True
-                    else:
+
+                if any(not o for o in tunes_list):
+                    insert_errors.append(f"Not all tunes fields are full")
+                    not_valid=True
+                else:
+                    for o in tunes_list:
                         try:
-                            tune_int = int(o)
-                            if tune_int >= 21 or tune_int <= 0:
-                                insert_errors.append(f"{tune_int} is not a valid tune")
+                            o = int(o)
+                            if o >= 21 or o <= 0:
+                                insert_errors.append(f"{o} is not a valid tune")
                                 not_valid = True
                         except ValueError:
-                            insert_errors.append(f"{tune_int} is not a number")
+                            insert_errors.append(f"{o} is not a number")
                             not_valid = True
 
-                if vehicle_name not in vehicles_list:
+                if vehicle_name and vehicle_name not in vehicles_list:
                     insert_errors.append(f"{vehicle_name} is not a valid vehicle")
                     not_valid = True
 
                 for i in slot_list:
-                    if i not in parts_list:
+                    if i and i not in parts_list:
                         insert_errors.append(f"{i} is not a valid part")
                         not_valid = True
 
-                if slot1 == slot2 or slot2 == slot3 or slot1 == slot3:
-                    insert_errors.append("Duped parts")
-                    not_valid = True
+                if slot1 and slot2 and slot3:
+                    if len([slot1,slot2,slot3]) < 3:
+                        insert_errors.append("Duplicate parts")
+                        not_valid = True
                 
-                if len(player) >= 16:
+                if player and (len(player) > 16 or len(player) < 3):
                     insert_errors.append(f"{player} is not a real player")
                     not_valid = True
                 
-                if not_valid:
+                if not_valid and "Not all fields are filled" not in insert_errors:
                     insert_errors.append("Invalid Fields")
                 else:
                     #Search the db for matching fields
@@ -317,11 +334,12 @@ def setups():
                         WR_Times.player == player
                     ).first()
                     
-                    #If there is a duplicate:
+                    #Update time if duplicate is found
                     if setup_query:
                         print("Already a setup")
                         if time < setup_query.wr_time.time:
-                            insert_errors.append("Updated")
+                            if not insert_errors:
+                                insert_errors.append("Updated")
                             setup_query.wr_time.time = time
 
                     #No duplicate
@@ -339,7 +357,8 @@ def setups():
                             part_id = parts_query.part_id
                         )
                         db.session.add(setup)
-                        insert_errors.append("Inserted")
+                        if not insert_errors:
+                            insert_errors.append("Inserted")
 
                     db.session.commit()
     all_setups = Setups.query.all()
@@ -373,7 +392,8 @@ def search():
     player_filter = request.args.getlist("player_filter") or None
     track_filter = request.args.getlist("track_filter") or None
     vehicle_filter = request.args.getlist("vehicle_filter") or None
-    
+
+    #Only players with active records (no orphans)
     players_options = []
     for c in (db.session.query(WR_Times.player).join(Setups).distinct().all()):
         players_options.append(c[0])
@@ -461,7 +481,7 @@ def search():
     if search_bar:
         #Search and filter data
 
-        #Search word matching (2 words to X words)
+        #Turn the search into word combinations (2 words to X words)
         loop_index = 0
         search_split = search_bar.strip().split()
         filter_match = []
@@ -483,8 +503,7 @@ def search():
                 loop_index += 1
 
 
-        #Filter results by search
-
+        #Case insensitive search
         for c in filter_match:
             search_filter = [Tracks.track_name.ilike(c),
                       Vehicles.vehicle_name.ilike(c),

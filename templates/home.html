@@ -1,5 +1,12 @@
 {% extends 'layout.html' %}
 {% block content %}
+
+{% if session.get('settings_error') %}
+    {% for i in session.pop('settings_error') %}
+        <p>{{i}}</p>
+    {% endfor %}
+{% endif %}
+
 <div class="home">
     <img src="static/beackbackground.png" class="background">
 
@@ -85,6 +92,9 @@
             <h2>Where can I insert and/or delete setups?</h2>
             <p>On the "Setups" page there is a table with every single setup in the database, there is also a button next to each setup to delete it, as well as a form at the top of the page to insert more setups.</p><br>
 
+            <h2>What are the parameters for the insert form?</h2>
+            <p>Vehicle is 1 of the 34 total, time is any number greater than 0 and less than the 32 bit integer limit (2,147,483,647), player is any name that is inbetween 3 and 16 characters long, tunes are 1 number between 1 and 20, track is 1 of the 191 total tracks, parts are 1 part per slot out of the 19 total parts but the same part can't be used more than once accross all 3 slots. </p>
+
             <h2>How do I use these setups?</h2>
             <p>For the tunes system, the first tune corresponds to the first attribute (eg. engine, grip, balance) so if the tunes were 4,11,10,5 the first attribute would be set to 4/20, the second attribute to 11/20 etc. However for parts the order doesn't matter so you dont need to stick to the order in the setup. There is a video below explaining this:</p>
             <video controls src="{{ url_for('static', filename='Setup_Tutorial.mp4') }}"></video><br>
@@ -98,9 +108,5 @@
             </p>
         </div>
     </div>
-    <br>
-    <br>
-    <br>
-    <br>
 </div>
 {% endblock %}
