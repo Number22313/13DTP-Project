@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, or_
 from sqlalchemy.orm import aliased
+from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/database.db"
@@ -121,9 +122,9 @@ class Parts(db.Model):
     setups = db.relationship("Setups", back_populates="parts_combinations")
 
 
-@app.errorhandler(404)
-def error(a):
-    return render_template('error.html')
+@app.errorhandler(HTTPException)
+def error_handler(a):
+    return render_template('error.html', error_code=a.code, error_response=a.name)
 
 
 def wr_subquery():
@@ -174,13 +175,8 @@ def settings_menu():
 def Home():
     setups_count = Setups.query.count()
     total_parts = Parts.query.count()
-    unique_players = set()
-    for i in WR_Times.query.all():
-        unique_players.add(i.player)
-    
-    total_players = 0
-    for p in unique_players:
-        total_players += 1
+
+    total_players = len({i.player for i in WR_Times.query.all()})
 
     fastest_times = Setups.query.join(WR_Times).order_by(WR_Times.time.asc()).all()
     return render_template('home.html',
@@ -287,7 +283,7 @@ def setups():
                         not_valid = True
 
                 if slot1 and slot2 and slot3:
-                    if len([slot1,slot2,slot3]) < 3:
+                    if len({slot1,slot2,slot3}) < 3:
                         insert_errors.append("Duplicate parts")
                         not_valid = True
                 
@@ -394,10 +390,7 @@ def search():
     vehicle_filter = request.args.getlist("vehicle_filter") or None
 
     #Only players with active records (no orphans)
-    players_options = []
-    for c in (db.session.query(WR_Times.player).join(Setups).distinct().all()):
-        players_options.append(c[0])
-        
+    players_options = sorted({c.wr_time.player for c in Setups.query.all() if c.wr_time and c.wr_time.player})
 
     search_bar = request.args.get("search_bar") or None
     
