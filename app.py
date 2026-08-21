@@ -3,9 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, or_
 from sqlalchemy.orm import aliased
 from werkzeug.exceptions import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/alloy/13DTP-Project/database.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = 'temporary_secret_key'
 db = SQLAlchemy(app)
@@ -140,12 +141,12 @@ def wr_subquery():
 @app.before_request
 def settings_menu():
     error = []
-    rpp = request.form.get('rows_per_page')
-    theme = request.form.get('theme')
+    rpp = request.form.get('rows_per_page', "")
+    theme = request.form.get('theme', "")
     if 'theme' not in session:
             session['theme'] = 'dark'
     if 'rows_per_page' not in session:
-        session['rows_per_page'] = 10
+        session['rows_per_page'] = 50
     
     if request.method == 'POST' and 'Save' in request.form:
         #validation
@@ -198,6 +199,9 @@ def setups():
                 setup_delete = int(setup_delete)
                 Setups.query.filter(Setups.setup_id == setup_delete).delete()
                 db.session.commit()
+            except SQLAlchemyError:
+                db.session.rollback()
+                insert_errors.append(f"Database error, insert rolled back")
             except ValueError:
                 insert_errors.append(f"{setup_delete} is not a valid id")
 
@@ -294,69 +298,76 @@ def setups():
                 if not_valid and "Not all fields are filled" not in insert_errors:
                     insert_errors.append("Invalid Fields")
                 else:
-                    #Search the db for matching fields
-                    vehicle_query = Vehicles.query.filter_by(vehicle_name=vehicle_name).first()
-                    if not vehicle_query:
-                        vehicle_query = Vehicles(vehicle_name=vehicle_name)
-                        db.session.add(vehicle_query)
+                    try:
+                        #Search the db for matching fields
+                        vehicle_query = Vehicles.query.filter_by(vehicle_name=vehicle_name).first()
+                        if not vehicle_query:
+                            vehicle_query = Vehicles(vehicle_name=vehicle_name)
+                            db.session.add(vehicle_query)
 
-                    track_query = Tracks.query.filter_by(track_name=track_name).first()
-                    if not track_query:
-                        track_query = Tracks(track_name=track_name)
-                        db.session.add(track_query)
-                    
-                    tune_query = Tunes.query.filter_by(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4).first()
-                    if not tune_query:
-                        tune_query = Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4)
-                        db.session.add(tune_query)
-                    
-                    parts_query = Parts.query.filter_by(slot1=slot1, slot2=slot2, slot3=slot3).first()
-                    if not parts_query:
-                        parts_query = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
-                        db.session.add(parts_query)
+                        track_query = Tracks.query.filter_by(track_name=track_name).first()
+                        if not track_query:
+                            track_query = Tracks(track_name=track_name)
+                            db.session.add(track_query)
+                        
+                        tune_query = Tunes.query.filter_by(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4).first()
+                        if not tune_query:
+                            tune_query = Tunes(tune1=tune1,tune2=tune2,tune3=tune3,tune4=tune4)
+                            db.session.add(tune_query)
+                        
+                        parts_query = Parts.query.filter_by(slot1=slot1, slot2=slot2, slot3=slot3).first()
+                        if not parts_query:
+                            parts_query = Parts(slot1=slot1, slot2=slot2, slot3=slot3)
+                            db.session.add(parts_query)
 
-                    player_query = WR_Times.query.filter(WR_Times.player.ilike(player)).first()
-                    if player_query:
-                        player = player_query.player
-                    
-                    db.session.flush()
-                    
-                    #Check if they match
-                    setup_query = Setups.query.join(WR_Times).filter(
-                        Setups.vehicle == vehicle_query,
-                        Setups.track == track_query,
-                        Setups.tune == tune_query,
-                        Setups.parts_combinations == parts_query,
-                        WR_Times.player == player
-                    ).first()
-                    
-                    #Update time if duplicate is found
-                    if setup_query:
-                        print("Already a setup")
-                        if time < setup_query.wr_time.time:
-                            if not insert_errors:
-                                insert_errors.append("Updated")
-                            setup_query.wr_time.time = time
-
-                    #No duplicate
-                    elif not setup_query:
-                        print("Doesnt exist yet")
-                        time_query = WR_Times(time=time,player=player)
-                        db.session.add(time_query)
+                        player_query = WR_Times.query.filter(WR_Times.player.ilike(player)).first()
+                        if player_query:
+                            player = player_query.player
+                        
                         db.session.flush()
+                        
+                        #Check if they match
+                        setup_query = Setups.query.join(WR_Times).filter(
+                            Setups.vehicle == vehicle_query,
+                            Setups.track == track_query,
+                            Setups.tune == tune_query,
+                            Setups.parts_combinations == parts_query,
+                            WR_Times.player == player
+                        ).first()
+                        
+                        #Update time if duplicate is found
+                        if setup_query:
+                            print("Already a setup")
+                            if time < setup_query.wr_time.time:
+                                if not insert_errors:
+                                    insert_errors.append("Updated")
+                                setup_query.wr_time.time = time
 
-                        setup = Setups(
-                            time_id = time_query.time_id,
-                            vehicle_id = vehicle_query.vehicle_id,
-                            track_id = track_query.track_id,
-                            tune_id = tune_query.tune_id,
-                            part_id = parts_query.part_id
-                        )
-                        db.session.add(setup)
-                        if not insert_errors:
-                            insert_errors.append("Inserted")
+                        #No duplicate
+                        elif not setup_query:
+                            print("Doesnt exist yet")
+                            time_query = WR_Times(time=time,player=player)
+                            db.session.add(time_query)
+                            
+                            db.session.flush()
 
-                    db.session.commit()
+                            setup = Setups(
+                                time_id = time_query.time_id,
+                                vehicle_id = vehicle_query.vehicle_id,
+                                track_id = track_query.track_id,
+                                tune_id = tune_query.tune_id,
+                                part_id = parts_query.part_id
+                            )
+                            
+                            db.session.add(setup)
+                            if not insert_errors:
+                                insert_errors.append("Inserted")
+
+                        db.session.commit()
+                    except SQLAlchemyError:
+                        db.session.rollback()
+                        insert_errors.append(f"Database error, insert rolled back")
+
     all_setups = Setups.query.all()
     return render_template('Setups.html',
                            active_page='setups',
