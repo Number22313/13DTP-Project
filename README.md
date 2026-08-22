@@ -4,6 +4,7 @@ A web based app that acts as a 'hub' for all of the different time attack setups
 
 
 ## How to run the app
+*Python and Git need to be installed for the commands to work*
 
 Run these commands in a terminal:
 
@@ -15,7 +16,11 @@ Run these commands in a terminal:
    
    cd HCR2-Setups-Guide
 
-3. Activate the Virtual Environment:
+3. Create the Virtual Environment:
+
+   python -m venv venv
+
+4. Activate the Virtual Environment:
    
    Linux/MacOS:
    source venv/bin/activate
@@ -23,11 +28,11 @@ Run these commands in a terminal:
    Windows:
    venv\Scripts\activate
 
-4. Install the required packages to run:
+5. Install the required packages to run:
    
    python -m pip install -r requirements.txt
 
-5. Run the app:
+6. Run the app:
    
    python app.py
 
