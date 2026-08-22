@@ -389,6 +389,9 @@ label
     border-radius: 6px;
     border: 1px solid var(--input-border);
     height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .clear_filters:hover
@@ -422,7 +425,6 @@ label
 {
     cursor: pointer;
     list-style: none;
-    background-color: crimson;
 }
 
 .settings_menu

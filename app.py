@@ -165,7 +165,8 @@ def settings_menu():
                 
         except (ValueError,TypeError):
             session['rows_per_page'] = 50
-            error.append(f"{rpp} is not a number")
+            if rpp != "":
+                error.append(f"{rpp} is not a number")
 
         if error:
             session['settings_error'] = error
@@ -210,7 +211,7 @@ def setups():
             insert_submit = request.form.get("insert")
             if insert_submit == "insert":
                 print("Inserting")
-                
+
                 #All form fields as variables for validation and insertion
                 not_valid = False
                 time=request.form.get("time","")
@@ -255,7 +256,7 @@ def setups():
                     try:
                         time = float(time)
                         print(time)
-                        if time <= 0:
+                        if time <= 0 or time >= 2147483647:
                             insert_errors.append(f"{time} is not a valid time")
                             not_valid = True
                     except(ValueError, TypeError):
@@ -368,7 +369,7 @@ def setups():
                         db.session.rollback()
                         insert_errors.append(f"Database error, insert rolled back")
 
-    all_setups = Setups.query.all()
+    all_setups = reversed(Setups.query.all())
     return render_template('Setups.html',
                            active_page='setups',
                            setups=all_setups,
@@ -380,6 +381,8 @@ def setups():
 
 @app.route('/Search', methods=['GET', 'POST'])
 def search():
+    if request.args.get("clear_filters"):
+        return redirect(url_for('search'))
     setup = []
     result_errors = []
     wr_setups = []
@@ -388,9 +391,6 @@ def search():
     tune2 = request.args.get("tune2") or None
     tune3 = request.args.get("tune3") or None
     tune4 = request.args.get("tune4") or None
-    slot1 = request.args.get("slot1") or None
-    slot2 = request.args.get("slot2") or None
-    slot3 = request.args.get("slot3") or None
     tunes = [(tune1, Tunes.tune1),
             (tune2, Tunes.tune2),
             (tune3, Tunes.tune3),
@@ -399,6 +399,13 @@ def search():
     player_filter = request.args.getlist("player_filter") or None
     track_filter = request.args.getlist("track_filter") or None
     vehicle_filter = request.args.getlist("vehicle_filter") or None
+    slot1 = request.args.getlist("slot1")
+    slot2 = request.args.getlist("slot2")
+    slot3 = request.args.getlist("slot3")
+
+    #Seperate variables to keep filters when reloading page
+    filters = [time,tune1,tune2,tune3,tune4,slot1,slot2,slot3,wr_checked,player_filter,track_filter,vehicle_filter]
+    print(f"{filters}")
 
     #Only players with active records (no orphans)
     players_options = sorted({c.wr_time.player for c in Setups.query.all() if c.wr_time and c.wr_time.player})
@@ -454,29 +461,29 @@ def search():
             except ValueError:
                 result_errors.append(f"{value} is not an integer")
             
-    if slot1:
-        if slot1 in parts_list:
-            setup = setup.filter((Parts.slot1 == slot1)|
-                                (Parts.slot2 == slot1)|
-                                (Parts.slot3 == slot1))
+    for slot1_ in slot1:
+        if slot1_ in parts_list:
+            setup = setup.filter((Parts.slot1 == slot1_)|
+                                (Parts.slot2 == slot1_)|
+                                (Parts.slot3 == slot1_))
         else:
-            result_errors.append(f"{slot1} is not a valid part")
+            result_errors.append(f"{slot1_} is not a valid part")
     
-    if slot2:
-        if slot2 in parts_list:
-            setup = setup.filter((Parts.slot1 == slot2)|
-                                (Parts.slot2 == slot2)|
-                                (Parts.slot3 == slot2))
+    for slot2_ in slot2:
+        if slot2_ in parts_list:
+            setup = setup.filter((Parts.slot1 == slot2_)|
+                                (Parts.slot2 == slot2_)|
+                                (Parts.slot3 == slot2_))
         else:
-            result_errors.append(f"{slot2} is not a valid part")
+            result_errors.append(f"{slot2_} is not a valid part")
         
-    if slot3:
-        if slot3 in parts_list:
-            setup = setup.filter((Parts.slot1 == slot3)|
-                                (Parts.slot2 == slot3)|
-                                (Parts.slot3 == slot3))
+    for slot3_ in slot3:
+        if slot3_ in parts_list:
+            setup = setup.filter((Parts.slot1 == slot3_)|
+                                (Parts.slot2 == slot3_)|
+                                (Parts.slot3 == slot3_))
         else:
-            result_errors.append(f"{slot3} is not a valid part")
+            result_errors.append(f"{slot3_} is not a valid part")
 
     master_list_lower = {}
     for z in (tracks_list+vehicles_list+parts_list+players_options):
@@ -541,7 +548,8 @@ def search():
 
     #Filter results for wrs
     if wr_checked:
-        setup = wr_subquery()
+        wrs = wr_subquery().subquery()
+        setup = setup.filter(Setups.setup_id.in_(db.session.query(wrs.c.setup_id)))
     
     #All or nothing
     if result_errors:
@@ -562,7 +570,8 @@ def search():
                            search_bar=search_bar or "",
                            result=result,
                            players=players_options,
-                           result_errors=result_errors)
+                           result_errors=result_errors,
+                           filters=filters or "")
 
 
 @app.route('/Leaderboards', methods=['GET', 'POST'])

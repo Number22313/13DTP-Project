@@ -14,7 +14,7 @@
         <div class="search-grid">
             <div class="search-box">
                 <label>Time</label>
-                <input type="number" step="any" name="time"><br>
+                <input type="number" step="any" name="time" value="{{filters[0]}}"><br>
             </div>
 
             <div class="search-box">
@@ -25,7 +25,7 @@
                         {% for i in players %}
                             <label class="expand_options">
                                 <span>{{i}}</span>
-                                <input type="checkbox" value="{{i}}" name="player_filter">
+                                <input type="checkbox" value="{{i}}" name="player_filter" {% if filters[9] is not none and i in filters[9] %} checked {% endif %}>
                             </label>
                         {% endfor %}
                     </div>
@@ -40,7 +40,7 @@
                         {% for i in tracks_list %}
                             <label class="expand_options">
                                 <span>{{i}}</span>
-                                <input type="checkbox" value="{{i}}" name="track_filter">
+                                <input type="checkbox" value="{{i}}" name="track_filter" {% if filters[10] is not none and i in filters[10] %} checked {% endif %}>
                             </label>
                         {% endfor %}
                     </div>
@@ -50,10 +50,10 @@
             <div class="search-box">
                 <label>Tunes</label>
                 <div class="multi-select">
-                    <input type="number" max="20" min="1" name="tune1">
-                    <input type="number" max="20" min="1" name="tune2">
-                    <input type="number" max="20" min="1" name="tune3">
-                    <input type="number" max="20" min="1" name="tune4">
+                    <input type="number" max="20" min="1" name="tune1" value="{{filters[1]}}">
+                    <input type="number" max="20" min="1" name="tune2" value="{{filters[2]}}">
+                    <input type="number" max="20" min="1" name="tune3" value="{{filters[3]}}">
+                    <input type="number" max="20" min="1" name="tune4" value="{{filters[4]}}">
                 </div>
             </div>
 
@@ -65,7 +65,7 @@
                         {% for i in vehicles_list %}
                             <label class="expand_options">
                                 <span>{{i}}</span>
-                                <input type="checkbox" value="{{i}}" name="vehicle_filter">
+                                <input type="checkbox" value="{{i}}" name="vehicle_filter" {% if filters[11] is not none and i in filters[11] %} checked {% endif %}>
                             </label>
                         {% endfor %}
                     </div>
@@ -82,7 +82,7 @@
                             {% for x in parts_list %}
                                 <label class="expand_options">
                                     <span>{{x}}</span>
-                                    <input type="checkbox" value="{{x}}" name="slot{{i+1}}">
+                                    <input type="checkbox" value="{{x}}" name="slot{{i+1}}" {% if filters[5+i] is not none and x in filters[5+i] %} checked {% endif %}>
                                 </label>
                             {% endfor %}
                         </div>
@@ -93,10 +93,10 @@
             
             <label class="expand_options world_records">
                 <span>World Records</span>
-                <input type="checkbox" name="wr_checked">
+                <input type="checkbox" name="wr_checked" {% if "on" in filters %} checked {% endif %}>
             </label>
             
-            <button type="submit" class="clear_filters">Clear Filters</button>
+            <div type="submit" class="clear_filters"><a href="{{url_for('search')}}">Clear Filters</a></div>
         </div>
 
         <br>
@@ -141,7 +141,15 @@
                         <td>{{i.track.track_name}}</td>
                         <td>{{i.tune.tune1}}/{{i.tune.tune2}}/{{i.tune.tune3}}/{{i.tune.tune4}}</td>
                         <td>{{i.vehicle.vehicle_name}}</td>
-                        <td>{{i.parts_combinations.slot1}}, {{i.parts_combinations.slot2}}, {{i.parts_combinations.slot3}}</td>
+                        <td>
+                            <img src="{{ url_for('static', filename=i.parts_combinations.slot1+'.webp') }}" alt="{{i.parts_combinations.slot1}}" title="{{i.parts_combinations.slot1}}">
+                        </td>
+                        <td>
+                            <img src="{{ url_for('static', filename=i.parts_combinations.slot2+'.webp') }}" alt="{{i.parts_combinations.slot2}}" title="{{i.parts_combinations.slot2}}">
+                        </td>
+                        <td>
+                            <img src="{{ url_for('static', filename=i.parts_combinations.slot3+'.webp') }}" alt="{{i.parts_combinations.slot3}}" title="{{i.parts_combinations.slot3}}">
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
